@@ -1,2 +1,0 @@
-# CampanaRiccardo
-USA Travel Planner
