@@ -1,25 +1,12 @@
 package it.polito.tdp.TravelManager;
 
-import java.net.URL;
-import java.util.ResourceBundle;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.control.Label;
+import it.polito.TravelManager.model.Model;
 
-public class FXMLController implements Initializable {
+public class FXMLController {
     
-    @FXML
-    private Label label;
+    private Model model;
     
-    @FXML
-    private void handleButtonAction(ActionEvent event) {
-        System.out.println("You clicked me!");
-        label.setText("Hello World!");
+    public void setModel(Model model) {
+    	this.model = model;
     }
-    
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-    }    
 }
