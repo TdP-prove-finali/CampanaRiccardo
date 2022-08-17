@@ -1,6 +1,6 @@
 package it.polito.tdp.TravelManager;
 
-import it.polito.TravelManager.model.Model;
+import it.polito.tdp.TravelManager.model.Model;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;

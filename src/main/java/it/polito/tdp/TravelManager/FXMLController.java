@@ -1,6 +1,6 @@
 package it.polito.tdp.TravelManager;
 
-import it.polito.TravelManager.model.Model;
+import it.polito.tdp.TravelManager.model.Model;
 
 public class FXMLController {
     
