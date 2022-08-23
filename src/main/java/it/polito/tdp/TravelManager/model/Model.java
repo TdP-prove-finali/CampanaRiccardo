@@ -21,7 +21,7 @@ public class Model {
 	List<Aeroporto> aeroporti;
 	List<Volo> voli;
 	Graph<Aeroporto, DefaultWeightedEdge> grafo;
-	List<List<Volo>> finale;
+	List<List<DefaultWeightedEdge>> finale;
 	
 	public void loadAll(){
 		aeroporti = new ArrayList<Aeroporto>(this.dao.loadAllAeroporti());
@@ -64,17 +64,26 @@ public class Model {
 	}
 	
 	public List<List<Volo>> percorso(Aeroporto origine, Aeroporto destinazione, int scali){
-		finale = new ArrayList<List<Volo>>();
-		List<Volo> parziale = new ArrayList<Volo>();
+		finale = new ArrayList<List<DefaultWeightedEdge>>();
+		List<DefaultWeightedEdge> parziale = new ArrayList<DefaultWeightedEdge>();
+		List<Aeroporto> listaScali = new ArrayList<Aeroporto>();
+		listaScali.add(origine);
 		
-		percorsoRicorsiva(origine, destinazione, parziale, scali);
+		percorsoRicorsiva(origine, destinazione, parziale, scali, listaScali);
+		
+		//in questo momento finale contiene liste di archi, devo trasformarle in liste di voli prima di returnarla
 		
 		return finale;
 	}
 
-	private void percorsoRicorsiva(Aeroporto origine, Aeroporto destinazione, List<Volo> parziale, int scali) {
-		if(parziale.size() <= scali) {
+	private void percorsoRicorsiva(Aeroporto origine, Aeroporto destinazione, List<DefaultWeightedEdge> parziale, int scali, List<Aeroporto> listaScali) {
+		if(listaScali.size() > scali) {		//caso terminale negativo
+			return;
+		}
+		
+		if(listaScali.size() <= scali && listaScali.get(listaScali.size()-1).equals(destinazione)) {		//caso terminale positivo
 			finale.add(parziale);
+			return;
 		}
 		
 		GraphIterator<Aeroporto, DefaultWeightedEdge> visita = new DepthFirstIterator<>(this.grafo, origine);
@@ -82,10 +91,19 @@ public class Model {
 		for(int i=0; i<=scali; i++) {
 			while(visita.hasNext()) {
 				Aeroporto a = visita.next();
+				
+				if(this.grafo.containsEdge(listaScali.get(listaScali.size()-1), a)){
+					listaScali.add(a);
+					
+					parziale.add(this.grafo.getEdge(listaScali.get(listaScali.size()-1), a));
+					percorsoRicorsiva(origine, destinazione, parziale, scali, listaScali);
+					parziale.remove(parziale.size()-1);
+					
+					listaScali.remove(a);
+				}
 			
 			}
 		}
-		
 	}
 	
 }
