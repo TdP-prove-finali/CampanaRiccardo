@@ -1,42 +1,63 @@
 package it.polito.tdp.TravelManager;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import it.polito.tdp.TravelManager.model.Aeroporto;
+import it.polito.tdp.TravelManager.model.Itinerario;
 import it.polito.tdp.TravelManager.model.Model;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 
 public class FXMLController {
 	
 	Model model;
 
-    @FXML
+	@FXML
     private ResourceBundle resources;
 
     @FXML
     private URL location;
 
     @FXML
-    private TableColumn<?, ?> clAeroportoArrivo;
+    private TableColumn<Aeroporto, String> clAeroportoArrivo;
 
     @FXML
-    private TableColumn<?, ?> clAeroportoPartenza;
+    private TableColumn<Aeroporto, String> clAeroportoPartenza;
 
     @FXML
-    private TableColumn<?, ?> clCittaArrivo;
+    private TableColumn<Aeroporto, String> clCittaArrivo;
 
     @FXML
-    private TableColumn<?, ?> clCittaBnB;
+    private TableColumn<Aeroporto, String> clCittaPartenza;
+    
+    @FXML
+    private TableColumn<Itinerario, Aeroporto> clArrival;
+    
+    @FXML
+    private TableColumn<Itinerario, Aeroporto> clDeparture;
+    
+    @FXML
+    private TableColumn<Itinerario, Double> clPrezzoVolo;
+    
+    @FXML
+    private TableColumn<Itinerario, Double> clScali;
 
     @FXML
-    private TableColumn<?, ?> clCittaPartenza;
+    private TableColumn<Aeroporto, String> clStatoArrivo;
+
+    @FXML
+    private TableColumn<Aeroporto, String> clStatoPartenza;
 
     @FXML
     private TableColumn<?, ?> clNome;
@@ -48,9 +69,6 @@ public class FXMLController {
     private TableColumn<?, ?> clPrezzo;
 
     @FXML
-    private TableColumn<?, ?> clPrezzoVolo;
-
-    @FXML
     private TableColumn<?, ?> clQuartiere;
 
     @FXML
@@ -58,15 +76,6 @@ public class FXMLController {
 
     @FXML
     private TableColumn<?, ?> clRecensioni;
-
-    @FXML
-    private TableColumn<?, ?> clScali;
-
-    @FXML
-    private TableColumn<?, ?> clStatoArrivo;
-
-    @FXML
-    private TableColumn<?, ?> clStatoPartenza;
 
     @FXML
     private TableColumn<?, ?> clTipo;
@@ -78,22 +87,28 @@ public class FXMLController {
     private ComboBox<String> cmbPartenza;
 
     @FXML
-    private ComboBox<?> cmbRating;
+    private ComboBox<String> cmbRating;
 
     @FXML
-    private ComboBox<?> cmbRecensioni;
+    private ComboBox<String> cmbRecensioni;
 
     @FXML
     private ComboBox<String> cmbScali;
 
     @FXML
-    private ComboBox<?> cmbTipo;
+    private ComboBox<String> cmbTipo;
+    
+    @FXML
+    private Label lblErroreAirBnB;
+
+    @FXML
+    private Label lblErroreVolo;
 
     @FXML
     private TableView<?> tblBnB;
 
     @FXML
-    private TableView<?> tblVoli;
+    private TableView<Itinerario> tblVoli;
 
     @FXML
     private TextField txtOspiti;
@@ -106,20 +121,90 @@ public class FXMLController {
 
     @FXML
     void handleCercaVoli(ActionEvent event) {
-
+    	String departure = null;
+    	String arrival = null;
+    	double price = 0;
+    	int stops = -1;
+    	
+    	if(cmbPartenza.getValue() != null) {
+    		departure = cmbPartenza.getValue();
+    	} else {
+    		lblErroreVolo.setText("Select a departure Airport");
+    	}
+    	
+    	if(cmbArrivo.getValue() != null) {
+    		arrival = cmbPartenza.getValue();
+    	} else {
+    		lblErroreVolo.setText("Select an arrival Airport");
+    	}
+    	
+    	try {
+    		if(txtPrezzoVolo.getText() != null) {
+    			price = Integer.parseInt(txtPrezzoVolo.getText());
+    		}
+    	} catch(NumberFormatException e) {
+    		lblErroreVolo.setText("Price option not valid");
+    	}
+    	
+    	if(cmbScali.getValue() != null) {
+    		String Sstops = cmbScali.getValue();
+    		if(Sstops.compareTo("Non-Stop") == 0) {
+    			stops = 0;
+    		}
+    		if(Sstops.compareTo("1 Stop") == 0) {
+    			stops = 1;
+    		}
+    		if(Sstops.compareTo("2 Stops") == 0) {
+    			stops = 2;
+    		}
+    		
+    	} else {
+    		lblErroreVolo.setText("Select how many stops you desire");
+    	}
+    	
+    	if(!departure.isBlank() && !arrival.isBlank() && price != 0 && stops <= 2 && stops >= 0) {
+    		List<Itinerario> result = this.model.percorso(departure, arrival, stops, price);
+       		
+    		clDeparture.setCellValueFactory(new PropertyValueFactory<Itinerario, Aeroporto>("Departure"));
+    		clArrival.setCellValueFactory(new PropertyValueFactory<Itinerario, Aeroporto>("Arrival"));
+    		clStatoPartenza.setCellValueFactory(new PropertyValueFactory<Aeroporto, String>("state"));
+    		clCittaPartenza.setCellValueFactory(new PropertyValueFactory<Aeroporto, String>("city"));
+    		clAeroportoPartenza.setCellValueFactory(new PropertyValueFactory<Aeroporto, String>("IATA"));
+    		clStatoArrivo.setCellValueFactory(new PropertyValueFactory<Aeroporto, String>("state"));
+    		clCittaArrivo.setCellValueFactory(new PropertyValueFactory<Aeroporto, String>("city"));
+    		clAeroportoArrivo.setCellValueFactory(new PropertyValueFactory<Aeroporto, String>("IATA"));
+    		clPrezzoVolo.setCellValueFactory(new PropertyValueFactory<Itinerario, Double>("prezzo"));
+    		clScali.setCellValueFactory(new PropertyValueFactory<Itinerario, Double>("stops"));
+    		
+    		tblVoli.setItems(FXCollections.observableArrayList(result));
+    		
+    	}
+    	
+    	
     }
     
     @FXML
     void handleCercaBnBs(ActionEvent event) {
 
     }
+    
+    @FXML
+    void handleClearAirBnB(ActionEvent event) {
+
+    }
+
+    @FXML
+    void handleClearVoli(ActionEvent event) {
+
+    }
 
     @FXML
     void initialize() {
+    	assert clDeparture != null : "fx:id=\"clDeparture\" was not injected: check your FXML file 'Scene.fxml'.";
+    	assert clArrival != null : "fx:id=\"clArrival\" was not injected: check your FXML file 'Scene.fxml'.";
         assert clAeroportoArrivo != null : "fx:id=\"clAeroportoArrivo\" was not injected: check your FXML file 'Scene.fxml'.";
         assert clAeroportoPartenza != null : "fx:id=\"clAeroportoPartenza\" was not injected: check your FXML file 'Scene.fxml'.";
         assert clCittaArrivo != null : "fx:id=\"clCittaArrivo\" was not injected: check your FXML file 'Scene.fxml'.";
-        assert clCittaBnB != null : "fx:id=\"clCittaBnB\" was not injected: check your FXML file 'Scene.fxml'.";
         assert clCittaPartenza != null : "fx:id=\"clCittaPartenza\" was not injected: check your FXML file 'Scene.fxml'.";
         assert clNome != null : "fx:id=\"clNome\" was not injected: check your FXML file 'Scene.fxml'.";
         assert clOspiti != null : "fx:id=\"clOspiti\" was not injected: check your FXML file 'Scene.fxml'.";
@@ -143,7 +228,9 @@ public class FXMLController {
         assert txtOspiti != null : "fx:id=\"txtOspiti\" was not injected: check your FXML file 'Scene.fxml'.";
         assert txtPrezzoBnB != null : "fx:id=\"txtPrezzoBnB\" was not injected: check your FXML file 'Scene.fxml'.";
         assert txtPrezzoVolo != null : "fx:id=\"txtPrezzoVolo\" was not injected: check your FXML file 'Scene.fxml'.";
-
+        assert lblErroreAirBnB != null : "fx:id=\"lblErroreAirBnB\" was not injected: check your FXML file 'Scene.fxml'.";
+        assert lblErroreVolo != null : "fx:id=\"lblErroreVolo\" was not injected: check your FXML file 'Scene.fxml'.";
+        
     }
     
     public void setModel(Model model) {
@@ -151,14 +238,18 @@ public class FXMLController {
     	
     	this.model.loadAll();
     	
+    	List<String> temp = new ArrayList<String>();
     	for(Aeroporto a : this.model.getAeroporti()) {
-    		cmbPartenza.getItems().add(a.getCity());
-    		cmbArrivo.getItems().add(a.getCity());
+    		temp.add(a.getName());
     	}
     	
-    	cmbScali.getItems().add("Diretto");
-    	cmbScali.getItems().add("1");
-    	cmbScali.getItems().add("2");
+    	Collections.sort(temp);
+    	cmbPartenza.getItems().addAll(temp);
+    	cmbArrivo.getItems().addAll(temp);
+    	
+    	cmbScali.getItems().add("Non-Stop");
+    	cmbScali.getItems().add("1 Stop");
+    	cmbScali.getItems().add("2 Stops");
     }
 
 }

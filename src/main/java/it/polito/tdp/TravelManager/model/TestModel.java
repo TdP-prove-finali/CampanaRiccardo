@@ -1,5 +1,7 @@
 package it.polito.tdp.TravelManager.model;
 
+import java.util.List;
+
 public class TestModel {
 
 	public static void main(String[] args) {
@@ -8,7 +10,12 @@ public class TestModel {
 		
 		model.loadAll();
 		
-		
+//		List<List<Adiacenza>> result = model.percorso(model.mappaAeroporti.get("LAX").getName(), model.mappaAeroporti.get("JFK").getName(), 1, 730);
+//		
+//		for(List<Adiacenza> list : result) {
+//			System.out.println(list);
+//		}
+//		
 	}
 
 }
