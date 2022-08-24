@@ -14,13 +14,13 @@
 
 <BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polito.tdp.TravelManager.FXMLController">
    <center>
-      <VBox alignment="CENTER" BorderPane.alignment="CENTER">
+      <VBox alignment="CENTER">
          <children>
             <HBox>
                <children>
                   <VBox>
                      <children>
-                        <Label text="Città di partenza:" />
+                        <Label text="Departure Airport" />
                         <ComboBox fx:id="cmbPartenza" prefWidth="150.0" />
                      </children>
                      <HBox.margin>
@@ -29,7 +29,7 @@
                   </VBox>
                   <VBox>
                      <children>
-                        <Label text="Città di arrivo:" />
+                        <Label text="Arrival Airport:" />
                         <ComboBox fx:id="cmbArrivo" prefWidth="150.0" />
                      </children>
                      <HBox.margin>
@@ -38,7 +38,7 @@
                   </VBox>
                   <VBox>
                      <children>
-                        <Label text="Prezzo massimo:" />
+                        <Label text="Max Price:" />
                         <TextField fx:id="txtPrezzoVolo" />
                      </children>
                      <HBox.margin>
@@ -47,16 +47,21 @@
                   </VBox>
                   <VBox>
                      <children>
-                        <Label text="Scali:" />
+                        <Label text="Stops:" />
                         <ComboBox fx:id="cmbScali" prefWidth="150.0" />
                      </children>
                      <HBox.margin>
                         <Insets left="10.0" right="10.0" />
                      </HBox.margin>
                   </VBox>
-                  <Button mnemonicParsing="false" onAction="#handleCercaVoli" text="Cerca">
+                  <Button mnemonicParsing="false" onAction="#handleCercaVoli" text="Search">
                      <HBox.margin>
                         <Insets top="17.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Button alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#handleClearVoli" text="Clear">
+                     <HBox.margin>
+                        <Insets left="10.0" right="10.0" top="17.0" />
                      </HBox.margin>
                   </Button>
                </children>
@@ -64,37 +69,37 @@
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </VBox.margin>
             </HBox>
-            <Label alignment="CENTER" contentDisplay="CENTER" disable="true" textFill="RED" />
+            <Label fx:id="lblErroreVolo" alignment="CENTER" contentDisplay="CENTER" disable="true" textFill="RED" />
             <HBox>
                <children>
                   <TableView fx:id="tblVoli" prefHeight="200.0" prefWidth="700.0">
                     <columns>
-                      <TableColumn prefWidth="262.5" text="Partenza">
+                      <TableColumn fx:id="clDeparture" prefWidth="262.5" text="Departure">
                            <columns>
-                              <TableColumn fx:id="clStatoPartenza" prefWidth="87.5" text="Stato" />
-                              <TableColumn fx:id="clCittaPartenza" prefWidth="87.5" text="Città" />
-                              <TableColumn fx:id="clAeroportoPartenza" prefWidth="87.5" text="Aeroporto" />
+                              <TableColumn fx:id="clStatoPartenza" prefWidth="87.5" text="State" />
+                              <TableColumn fx:id="clCittaPartenza" prefWidth="87.5" text="City" />
+                              <TableColumn fx:id="clAeroportoPartenza" prefWidth="87.5" text="Airport" />
                            </columns>
                         </TableColumn>
-                      <TableColumn prefWidth="262.5" text="Arrivo">
+                      <TableColumn fx:id="clArrival" prefWidth="262.5" text="Arrival">
                            <columns>
-                              <TableColumn fx:id="clStatoArrivo" prefWidth="87.5" text="Stato" />
-                              <TableColumn fx:id="clCittaArrivo" prefWidth="87.5" text="Città" />
-                              <TableColumn fx:id="clAeroportoArrivo" prefWidth="87.5" text="Aeroporto" />
+                              <TableColumn fx:id="clStatoArrivo" prefWidth="87.5" text="State" />
+                              <TableColumn fx:id="clCittaArrivo" prefWidth="87.5" text="City" />
+                              <TableColumn fx:id="clAeroportoArrivo" prefWidth="87.5" text="Airport" />
                            </columns>
                         </TableColumn>
-                        <TableColumn fx:id="clPrezzoVolo" minWidth="0.0" prefWidth="87.5" text="Prezzo" />
-                        <TableColumn fx:id="clScali" prefWidth="87.5" text="Scali" />
+                        <TableColumn fx:id="clPrezzoVolo" minWidth="0.0" prefWidth="87.5" text="Fare" />
+                        <TableColumn fx:id="clScali" prefWidth="87.5" text="Stops" />
                     </columns>
                      <HBox.margin>
-                        <Insets left="20.0" right="20.0" />
+                        <Insets left="52.5" right="52.5" />
                      </HBox.margin>
                   </TableView>
                </children>
             </HBox>
             <VBox alignment="TOP_CENTER">
                <children>
-                  <Label alignment="CENTER" text="La  ricerca di un AirBnB si attiverà se la destinazione del viaggio è tra le seguenti città:&#10; New York, Los Angeles, San Francisco, Washington D.C., Chicago, Boston " textAlignment="CENTER">
+                  <Label alignment="CENTER" text="The AirBnB search section will activate if the designated destionation is one of these cities:&#10; New York, Los Angeles, San Francisco, Washington D.C., Chicago, Boston " textAlignment="CENTER">
                      <VBox.margin>
                         <Insets bottom="10.0" left="10.0" right="10.0" top="20.0" />
                      </VBox.margin>
@@ -106,7 +111,7 @@
                      <children>
                         <VBox>
                            <children>
-                              <Label text="Prezzo massimo:" />
+                              <Label text="Max Price:" />
                               <TextField fx:id="txtPrezzoBnB" disable="true" />
                            </children>
                            <HBox.margin>
@@ -115,7 +120,7 @@
                         </VBox>
                         <VBox>
                            <children>
-                              <Label text="Tipo di proprietà" />
+                              <Label text="Property Type:" />
                               <ComboBox fx:id="cmbTipo" disable="true" prefWidth="150.0" />
                            </children>
                            <HBox.margin>
@@ -124,14 +129,14 @@
                         </VBox>
                         <VBox>
                            <children>
-                              <Label text="Ospiti:" />
+                              <Label text="Accomodations:" />
                               <TextField fx:id="txtOspiti" disable="true" />
                            </children>
                            <HBox.margin>
                               <Insets left="10.0" />
                            </HBox.margin>
                         </VBox>
-                        <Button disable="true" mnemonicParsing="false" onAction="#handleCercaBnBs" text="Cerca">
+                        <Button disable="true" mnemonicParsing="false" onAction="#handleCercaBnBs" text="Search">
                            <HBox.margin>
                               <Insets left="10.0" right="10.0" top="17.0" />
                            </HBox.margin>
@@ -151,32 +156,36 @@
                         </VBox>
                         <VBox>
                            <children>
-                              <Label text="Numero di Recensioni" />
+                              <Label text="Reviews:" />
                               <ComboBox fx:id="cmbRecensioni" disable="true" prefWidth="150.0" />
                            </children>
                            <HBox.margin>
                               <Insets left="10.0" right="10.0" />
                            </HBox.margin>
                         </VBox>
+                        <Button disable="true" mnemonicParsing="false" onAction="#handleClearAirBnB" text="Clear">
+                           <HBox.margin>
+                              <Insets top="17.0" />
+                           </HBox.margin>
+                        </Button>
                      </children>
                      <VBox.margin>
                         <Insets top="10.0" />
                      </VBox.margin>
                   </HBox>
-                  <Label disable="true" textFill="RED" />
+                  <Label fx:id="lblErroreAirBnB" disable="true" textFill="RED" />
                   <TableView fx:id="tblBnB" disable="true" prefHeight="200.0" prefWidth="700.0">
                     <columns>
-                      <TableColumn fx:id="clNome" prefWidth="87.5" text="Nome" />
-                      <TableColumn fx:id="clCittaBnB" prefWidth="87.5" text="Città" />
-                        <TableColumn fx:id="clQuartiere" prefWidth="87.5" text="Quartiere" />
-                        <TableColumn fx:id="clTipo" prefWidth="87.5" text="Tipo" />
-                        <TableColumn fx:id="clOspiti" prefWidth="87.5" text="Ospiti" />
-                        <TableColumn fx:id="clPrezzo" prefWidth="87.5" text="Prezzo" />
-                        <TableColumn fx:id="clRating" prefWidth="87.5" text="Rating" />
-                        <TableColumn fx:id="clRecensioni" prefWidth="87.5" text="N° recensioni" />
+                      <TableColumn fx:id="clNome" prefWidth="100.0" text="Name" />
+                        <TableColumn fx:id="clQuartiere" prefWidth="100.0" text="Neighbourood" />
+                        <TableColumn fx:id="clTipo" prefWidth="100.0" text="Type" />
+                        <TableColumn fx:id="clOspiti" prefWidth="100.0" text="Accomodations" />
+                        <TableColumn fx:id="clPrezzo" prefWidth="100.0" text="Price" />
+                        <TableColumn fx:id="clRating" prefWidth="100.0" text="Rating" />
+                        <TableColumn fx:id="clRecensioni" prefWidth="100.0" text="Reviews" />
                     </columns>
                      <VBox.margin>
-                        <Insets bottom="20.0" left="20.0" right="20.0" />
+                        <Insets bottom="20.0" left="52.5" right="52.5" />
                      </VBox.margin>
                   </TableView>
                </children>
