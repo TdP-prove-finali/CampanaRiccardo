@@ -16,7 +16,7 @@
    <center>
       <VBox alignment="CENTER">
          <children>
-            <HBox>
+            <HBox alignment="CENTER">
                <children>
                   <VBox>
                      <children>
@@ -69,34 +69,19 @@
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </VBox.margin>
             </HBox>
-            <Label fx:id="lblErroreVolo" alignment="CENTER" contentDisplay="CENTER" disable="true" textFill="RED" />
-            <HBox>
-               <children>
-                  <TableView fx:id="tblVoli" prefHeight="200.0" prefWidth="700.0">
-                    <columns>
-                      <TableColumn fx:id="clDeparture" prefWidth="262.5" text="Departure">
-                           <columns>
-                              <TableColumn fx:id="clStatoPartenza" prefWidth="87.5" text="State" />
-                              <TableColumn fx:id="clCittaPartenza" prefWidth="87.5" text="City" />
-                              <TableColumn fx:id="clAeroportoPartenza" prefWidth="87.5" text="Airport" />
-                           </columns>
-                        </TableColumn>
-                      <TableColumn fx:id="clArrival" prefWidth="262.5" text="Arrival">
-                           <columns>
-                              <TableColumn fx:id="clStatoArrivo" prefWidth="87.5" text="State" />
-                              <TableColumn fx:id="clCittaArrivo" prefWidth="87.5" text="City" />
-                              <TableColumn fx:id="clAeroportoArrivo" prefWidth="87.5" text="Airport" />
-                           </columns>
-                        </TableColumn>
-                        <TableColumn fx:id="clPrezzoVolo" minWidth="0.0" prefWidth="87.5" text="Fare" />
-                        <TableColumn fx:id="clScali" prefWidth="87.5" text="Stops" />
-                    </columns>
-                     <HBox.margin>
-                        <Insets left="52.5" right="52.5" />
-                     </HBox.margin>
-                  </TableView>
-               </children>
-            </HBox>
+            <Label fx:id="lblErroreVolo" alignment="CENTER" contentDisplay="CENTER" textFill="RED" />
+            <TableView fx:id="tblVolo" maxWidth="700.0" prefHeight="200.0" prefWidth="700.0">
+              <columns>
+                <TableColumn fx:id="clFare" prefWidth="70.0" text="Fare" />
+                <TableColumn fx:id="clStops" prefWidth="70.0" text="Stops" />
+                  <TableColumn fx:id="clItinerary" prefWidth="420.0" text="Itinerary" />
+                  <TableColumn fx:id="clPrices" prefWidth="140.0" text="Prices" />
+              </columns>
+               <VBox.margin>
+                  <Insets left="10.0" right="10.0" />
+               </VBox.margin>
+            </TableView>
+            <HBox alignment="CENTER" />
             <VBox alignment="TOP_CENTER">
                <children>
                   <Label alignment="CENTER" text="The AirBnB search section will activate if the designated destionation is one of these cities:&#10; New York, Los Angeles, San Francisco, Washington D.C., Chicago, Boston " textAlignment="CENTER">
@@ -136,7 +121,7 @@
                               <Insets left="10.0" />
                            </HBox.margin>
                         </VBox>
-                        <Button disable="true" mnemonicParsing="false" onAction="#handleCercaBnBs" text="Search">
+                        <Button fx:id="btnSearchAirBnBs" disable="true" mnemonicParsing="false" onAction="#handleCercaBnBs" text="Search">
                            <HBox.margin>
                               <Insets left="10.0" right="10.0" top="17.0" />
                            </HBox.margin>
@@ -163,7 +148,7 @@
                               <Insets left="10.0" right="10.0" />
                            </HBox.margin>
                         </VBox>
-                        <Button disable="true" mnemonicParsing="false" onAction="#handleClearAirBnB" text="Clear">
+                        <Button fx:id="btnClearAirBnBs" disable="true" mnemonicParsing="false" onAction="#handleClearAirBnB" text="Clear">
                            <HBox.margin>
                               <Insets top="17.0" />
                            </HBox.margin>
@@ -173,8 +158,8 @@
                         <Insets top="10.0" />
                      </VBox.margin>
                   </HBox>
-                  <Label fx:id="lblErroreAirBnB" disable="true" textFill="RED" />
-                  <TableView fx:id="tblBnB" disable="true" prefHeight="200.0" prefWidth="700.0">
+                  <Label fx:id="lblErroreAirBnB" textFill="RED" />
+                  <TableView fx:id="tblBnB" disable="true" maxWidth="700.0" prefHeight="200.0" prefWidth="700.0">
                     <columns>
                       <TableColumn fx:id="clNome" prefWidth="100.0" text="Name" />
                         <TableColumn fx:id="clQuartiere" prefWidth="100.0" text="Neighbourood" />
