@@ -15,11 +15,10 @@ public class AirBnB {
 	private int number_of_reviews;
 	private String review_scores_rating;
 	
-	public AirBnB(int id, double log_price, double prezzo, String property_type, int accomodates, String city,
+	public AirBnB(int id, double log_price, String property_type, int accomodates, String city,
 			String name, String neighbourhood, int number_of_reviews, String review_scores_rating) {
 		this.id = id;
 		this.log_price = log_price;
-		this.prezzo = prezzo;
 		this.property_type = property_type;
 		this.accomodates = accomodates;
 		this.city = city;
@@ -27,6 +26,8 @@ public class AirBnB {
 		this.neighbourhood = neighbourhood;
 		this.number_of_reviews = number_of_reviews;
 		this.review_scores_rating = review_scores_rating;
+		
+		prezzo = Math.exp(log_price);
 	}
 
 	public int getId() {

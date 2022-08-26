@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import it.polito.tdp.TravelManager.model.Aeroporto;
+import it.polito.tdp.TravelManager.model.AirBnB;
 import it.polito.tdp.TravelManager.model.Itinerario;
 import it.polito.tdp.TravelManager.model.Model;
 import javafx.collections.FXCollections;
@@ -19,10 +20,15 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.paint.Color;
+import javafx.scene.input.MouseEvent;
 
 public class FXMLController {
 	
 	Model model;
+	String arrival_city;
+	Itinerario choice;
+	AirBnB choiceBnB;
 
     @FXML
     private ResourceBundle resources;
@@ -43,31 +49,31 @@ public class FXMLController {
     private Button btnClearAirBnBs;
 
     @FXML
-    private TableColumn<?, ?> clNome;
+    private TableColumn<AirBnB, String> clNome;
 
     @FXML
-    private TableColumn<?, ?> clOspiti;
+    private TableColumn<AirBnB, Integer> clOspiti;
 
     @FXML
-    private TableColumn<?, ?> clPrezzo;
+    private TableColumn<AirBnB, Integer> clPrezzo;
 
     @FXML
     private TableColumn<Itinerario, String> clPrices;
 
     @FXML
-    private TableColumn<?, ?> clQuartiere;
+    private TableColumn<AirBnB, String> clQuartiere;
 
     @FXML
-    private TableColumn<?, ?> clRating;
+    private TableColumn<AirBnB, Integer> clRating;
 
     @FXML
-    private TableColumn<?, ?> clRecensioni;
+    private TableColumn<AirBnB, Integer> clRecensioni;
 
     @FXML
     private TableColumn<Itinerario, String> clStops;
 
     @FXML
-    private TableColumn<?, ?> clTipo;
+    private TableColumn<AirBnB, String> clTipo;
 
     @FXML
     private ComboBox<String> cmbArrivo;
@@ -76,16 +82,16 @@ public class FXMLController {
     private ComboBox<String> cmbPartenza;
 
     @FXML
-    private ComboBox<?> cmbRating;
+    private ComboBox<String> cmbRating;
 
     @FXML
-    private ComboBox<?> cmbRecensioni;
+    private ComboBox<String> cmbRecensioni;
 
     @FXML
     private ComboBox<String> cmbScali;
 
     @FXML
-    private ComboBox<?> cmbTipo;
+    private ComboBox<String> cmbTipo;
 
     @FXML
     private Label lblErroreAirBnB;
@@ -94,7 +100,7 @@ public class FXMLController {
     private Label lblErroreVolo;
 
     @FXML
-    private TableView<?> tblBnB;
+    private TableView<AirBnB> tblBnB;
 
     @FXML
     private TableView<Itinerario> tblVolo;
@@ -107,10 +113,25 @@ public class FXMLController {
 
     @FXML
     private TextField txtPrezzoVolo;
+    
+    @FXML
+    private TextField txtTotal;
+    
+    @FXML
+    void handleBnBChoice(MouseEvent event) {
+
+    }
 
     @FXML
     void handleCercaBnBs(ActionEvent event) {
-
+    	choiceBnB = tblBnB.getSelectionModel().getSelectedItem();
+        
+    	if (choiceBnB != null){
+    		
+    		//aggiungo a total il prezzo del bnb ricordando che devo fare l'esponenziale
+    		
+    		txtTotal.setText("");
+    	}
     }
 
     @FXML
@@ -123,6 +144,8 @@ public class FXMLController {
 		btnClearAirBnBs.setDisable(true);
 		btnSearchAirBnBs.setDisable(true);
 		tblBnB.setDisable(true);
+		
+		lblErroreVolo.setTextFill(Color.RED);
     	
     	String departure = null;
     	String arrival = null;
@@ -170,6 +193,10 @@ public class FXMLController {
     		List<Itinerario> result = this.model.percorso(departure, arrival, stops, price);
     		
     		if(!result.isEmpty()) {
+    			
+    			lblErroreVolo.setTextFill(Color.BLACK);
+    			lblErroreVolo.setText("Select your choice");
+    			
     			if(this.model.getMappaNomi().get(arrival).getCity().compareTo("Los Angeles") == 0 
         				|| this.model.getMappaNomi().get(arrival).getCity().compareTo("New York") == 0 
         				|| this.model.getMappaNomi().get(arrival).getCity().compareTo("San Francisco") == 0
@@ -177,6 +204,9 @@ public class FXMLController {
         				|| this.model.getMappaNomi().get(arrival).getCity().compareTo("Boston") == 0
         				|| this.model.getMappaNomi().get(arrival).getCity().compareTo("Washington D.C.") == 0) {
         			
+    				arrival_city = this.model.getMappaNomi().get(arrival).getCity();
+    				this.model.loadBnBs();
+    				
         			cmbRating.setDisable(false);
         			txtPrezzoBnB.setDisable(false);
         			cmbTipo.setDisable(false);
@@ -187,6 +217,8 @@ public class FXMLController {
         			tblBnB.setDisable(false);
         			
         		}
+    		} else {
+    			lblErroreVolo.setText("No results in the Database");
     		}
     		
     		Collections.sort(result);
@@ -201,8 +233,23 @@ public class FXMLController {
     }
 
     @FXML
+    void handleFlightChoice(MouseEvent event) {
+    	choice = tblVolo.getSelectionModel().getSelectedItem();
+        
+    	if (choice != null){
+    		txtTotal.setText(choice.getFare());
+    	}
+    }
+    
+    @FXML
     void handleClearAirBnB(ActionEvent event) {
-
+    	cmbTipo.getSelectionModel().clearSelection();
+    	cmbRating.getSelectionModel().clearSelection();
+    	cmbRecensioni.getSelectionModel().clearSelection();
+    	txtPrezzoBnB.clear();
+    	txtOspiti.clear();
+    	tblBnB.getItems().clear();
+    	txtTotal.clear();
     }
 
     @FXML
@@ -211,6 +258,10 @@ public class FXMLController {
     	cmbScali.getSelectionModel().clearSelection();
     	cmbPartenza.getSelectionModel().clearSelection();
     	cmbArrivo.getSelectionModel().clearSelection();
+    	tblVolo.getItems().clear();
+    	txtTotal.clear();
+    	
+    	lblErroreVolo.setTextFill(Color.RED);
     	
     	cmbRating.setDisable(true);
 		txtPrezzoBnB.setDisable(true);
@@ -250,6 +301,8 @@ public class FXMLController {
         assert txtOspiti != null : "fx:id=\"txtOspiti\" was not injected: check your FXML file 'Scene.fxml'.";
         assert txtPrezzoBnB != null : "fx:id=\"txtPrezzoBnB\" was not injected: check your FXML file 'Scene.fxml'.";
         assert txtPrezzoVolo != null : "fx:id=\"txtPrezzoVolo\" was not injected: check your FXML file 'Scene.fxml'.";
+        assert txtTotal != null : "fx:id=\"txtTotal\" was not injected: check your FXML file 'Scene.fxml'.";
+
 
     }
 
@@ -270,6 +323,18 @@ public class FXMLController {
 		cmbScali.getItems().add("Non-Stop");
 		cmbScali.getItems().add("1 Stop");
 		cmbScali.getItems().add("2 Stops");
+		
+		cmbTipo.getItems().addAll(this.model.loadTypes());
+		
+		for(int i=0; i<100; i+=10) {
+			cmbRating.getItems().add(i + "+");
+		}
+		
+		for(int j=0; j<=600; j+=25) {
+			cmbRecensioni.getItems().add(j + "+");
+		}
+		
+		
     }
     
 }

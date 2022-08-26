@@ -24,6 +24,7 @@ public class Model {
 	Graph<Aeroporto, DefaultWeightedEdge> grafo;
 	List<List<DefaultWeightedEdge>> finale;
 	List<Adiacenza> adiacenze;
+	List<AirBnB> bnbs;
 	
 	public void loadAll(){
 		aeroporti = new ArrayList<Aeroporto>(this.dao.loadAllAeroporti());
@@ -157,6 +158,14 @@ public class Model {
 	
 	public Map<String, Aeroporto> getMappaNomi(){
 		return this.mappaNomi;
+	}
+	
+	public void loadBnBs() {
+		bnbs = new ArrayList<AirBnB>(this.dao.loadAllAirBnBs());
+	}
+	
+	public List<String> loadTypes(){
+		return this.dao.loadTypes();
 	}
 	
 }
