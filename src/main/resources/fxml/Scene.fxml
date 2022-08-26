@@ -69,8 +69,11 @@
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </VBox.margin>
             </HBox>
-            <Label fx:id="lblErroreVolo" alignment="CENTER" contentDisplay="CENTER" textFill="RED" />
-            <TableView fx:id="tblVolo" maxWidth="700.0" prefHeight="200.0" prefWidth="700.0">
+            <Label fx:id="lblErroreVolo" alignment="CENTER" contentDisplay="CENTER" textFill="RED">
+               <VBox.margin>
+                  <Insets bottom="5.0" />
+               </VBox.margin></Label>
+            <TableView fx:id="tblVolo" maxWidth="700.0" onMouseClicked="#handleFlightChoice" prefHeight="200.0" prefWidth="700.0">
               <columns>
                 <TableColumn fx:id="clFare" prefWidth="70.0" text="Fare" />
                 <TableColumn fx:id="clStops" prefWidth="70.0" text="Stops" />
@@ -114,7 +117,7 @@
                         </VBox>
                         <VBox>
                            <children>
-                              <Label text="Accomodations:" />
+                              <Label text="Accommodations:" />
                               <TextField fx:id="txtOspiti" disable="true" />
                            </children>
                            <HBox.margin>
@@ -158,7 +161,10 @@
                         <Insets top="10.0" />
                      </VBox.margin>
                   </HBox>
-                  <Label fx:id="lblErroreAirBnB" textFill="RED" />
+                  <Label fx:id="lblErroreAirBnB" textFill="RED">
+                     <VBox.margin>
+                        <Insets bottom="5.0" />
+                     </VBox.margin></Label>
                   <TableView fx:id="tblBnB" disable="true" maxWidth="700.0" prefHeight="200.0" prefWidth="700.0">
                     <columns>
                       <TableColumn fx:id="clNome" prefWidth="100.0" text="Name" />
@@ -188,4 +194,23 @@
          </font>
       </Label>
    </top>
+   <bottom>
+      <HBox alignment="CENTER_RIGHT" BorderPane.alignment="CENTER_RIGHT">
+         <children>
+            <Label alignment="CENTER_RIGHT" text="Total:">
+               <HBox.margin>
+                  <Insets left="10.0" right="10.0" />
+               </HBox.margin>
+            </Label>
+            <TextField fx:id="txtTotal" alignment="CENTER_RIGHT" editable="false">
+               <HBox.margin>
+                  <Insets right="10.0" />
+               </HBox.margin>
+            </TextField>
+         </children>
+         <BorderPane.margin>
+            <Insets bottom="20.0" left="10.0" right="10.0" />
+         </BorderPane.margin>
+      </HBox>
+   </bottom>
 </BorderPane>
