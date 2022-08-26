@@ -15,6 +15,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.Button;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -23,41 +24,23 @@ public class FXMLController {
 	
 	Model model;
 
-	@FXML
+    @FXML
     private ResourceBundle resources;
 
     @FXML
     private URL location;
 
     @FXML
-    private TableColumn<Aeroporto, String> clAeroportoArrivo;
+    private TableColumn<Itinerario, String> clFare;
 
     @FXML
-    private TableColumn<Aeroporto, String> clAeroportoPartenza;
-
-    @FXML
-    private TableColumn<Aeroporto, String> clCittaArrivo;
-
-    @FXML
-    private TableColumn<Aeroporto, String> clCittaPartenza;
+    private TableColumn<Itinerario, String> clItinerary;
     
     @FXML
-    private TableColumn<Itinerario, Aeroporto> clArrival;
+    private Button btnSearchAirBnBs;
     
     @FXML
-    private TableColumn<Itinerario, Aeroporto> clDeparture;
-    
-    @FXML
-    private TableColumn<Itinerario, Double> clPrezzoVolo;
-    
-    @FXML
-    private TableColumn<Itinerario, Double> clScali;
-
-    @FXML
-    private TableColumn<Aeroporto, String> clStatoArrivo;
-
-    @FXML
-    private TableColumn<Aeroporto, String> clStatoPartenza;
+    private Button btnClearAirBnBs;
 
     @FXML
     private TableColumn<?, ?> clNome;
@@ -69,6 +52,9 @@ public class FXMLController {
     private TableColumn<?, ?> clPrezzo;
 
     @FXML
+    private TableColumn<Itinerario, String> clPrices;
+
+    @FXML
     private TableColumn<?, ?> clQuartiere;
 
     @FXML
@@ -76,6 +62,9 @@ public class FXMLController {
 
     @FXML
     private TableColumn<?, ?> clRecensioni;
+
+    @FXML
+    private TableColumn<Itinerario, String> clStops;
 
     @FXML
     private TableColumn<?, ?> clTipo;
@@ -87,17 +76,17 @@ public class FXMLController {
     private ComboBox<String> cmbPartenza;
 
     @FXML
-    private ComboBox<String> cmbRating;
+    private ComboBox<?> cmbRating;
 
     @FXML
-    private ComboBox<String> cmbRecensioni;
+    private ComboBox<?> cmbRecensioni;
 
     @FXML
     private ComboBox<String> cmbScali;
 
     @FXML
-    private ComboBox<String> cmbTipo;
-    
+    private ComboBox<?> cmbTipo;
+
     @FXML
     private Label lblErroreAirBnB;
 
@@ -108,7 +97,7 @@ public class FXMLController {
     private TableView<?> tblBnB;
 
     @FXML
-    private TableView<Itinerario> tblVoli;
+    private TableView<Itinerario> tblVolo;
 
     @FXML
     private TextField txtOspiti;
@@ -120,20 +109,34 @@ public class FXMLController {
     private TextField txtPrezzoVolo;
 
     @FXML
+    void handleCercaBnBs(ActionEvent event) {
+
+    }
+
+    @FXML
     void handleCercaVoli(ActionEvent event) {
+    	cmbRating.setDisable(true);
+		txtPrezzoBnB.setDisable(true);
+		cmbTipo.setDisable(true);
+		txtOspiti.setDisable(true);
+		cmbRecensioni.setDisable(true);
+		btnClearAirBnBs.setDisable(true);
+		btnSearchAirBnBs.setDisable(true);
+		tblBnB.setDisable(true);
+    	
     	String departure = null;
     	String arrival = null;
     	double price = 0;
     	int stops = -1;
     	
-    	if(cmbPartenza.getValue() != null) {
+    	if(cmbPartenza.getValue() != null && cmbPartenza.getValue() != "") {
     		departure = cmbPartenza.getValue();
     	} else {
     		lblErroreVolo.setText("Select a departure Airport");
     	}
     	
-    	if(cmbArrivo.getValue() != null) {
-    		arrival = cmbPartenza.getValue();
+    	if(cmbArrivo.getValue() != null && cmbArrivo.getValue() != "") {
+    		arrival = cmbArrivo.getValue();
     	} else {
     		lblErroreVolo.setText("Select an arrival Airport");
     	}
@@ -146,7 +149,7 @@ public class FXMLController {
     		lblErroreVolo.setText("Price option not valid");
     	}
     	
-    	if(cmbScali.getValue() != null) {
+    	if(cmbScali.getValue() != null && cmbScali.getValue() != "") {
     		String Sstops = cmbScali.getValue();
     		if(Sstops.compareTo("Non-Stop") == 0) {
     			stops = 0;
@@ -163,31 +166,40 @@ public class FXMLController {
     	}
     	
     	if(!departure.isBlank() && !arrival.isBlank() && price != 0 && stops <= 2 && stops >= 0) {
+    		lblErroreVolo.setText("");
     		List<Itinerario> result = this.model.percorso(departure, arrival, stops, price);
-       		
-    		clDeparture.setCellValueFactory(new PropertyValueFactory<Itinerario, Aeroporto>("Departure"));
-    		clArrival.setCellValueFactory(new PropertyValueFactory<Itinerario, Aeroporto>("Arrival"));
-    		clStatoPartenza.setCellValueFactory(new PropertyValueFactory<Aeroporto, String>("state"));
-    		clCittaPartenza.setCellValueFactory(new PropertyValueFactory<Aeroporto, String>("city"));
-    		clAeroportoPartenza.setCellValueFactory(new PropertyValueFactory<Aeroporto, String>("IATA"));
-    		clStatoArrivo.setCellValueFactory(new PropertyValueFactory<Aeroporto, String>("state"));
-    		clCittaArrivo.setCellValueFactory(new PropertyValueFactory<Aeroporto, String>("city"));
-    		clAeroportoArrivo.setCellValueFactory(new PropertyValueFactory<Aeroporto, String>("IATA"));
-    		clPrezzoVolo.setCellValueFactory(new PropertyValueFactory<Itinerario, Double>("prezzo"));
-    		clScali.setCellValueFactory(new PropertyValueFactory<Itinerario, Double>("stops"));
     		
-    		tblVoli.setItems(FXCollections.observableArrayList(result));
+    		if(!result.isEmpty()) {
+    			if(this.model.getMappaNomi().get(arrival).getCity().compareTo("Los Angeles") == 0 
+        				|| this.model.getMappaNomi().get(arrival).getCity().compareTo("New York") == 0 
+        				|| this.model.getMappaNomi().get(arrival).getCity().compareTo("San Francisco") == 0
+        				|| this.model.getMappaNomi().get(arrival).getCity().compareTo("Chicago") == 0
+        				|| this.model.getMappaNomi().get(arrival).getCity().compareTo("Boston") == 0
+        				|| this.model.getMappaNomi().get(arrival).getCity().compareTo("Washington D.C.") == 0) {
+        			
+        			cmbRating.setDisable(false);
+        			txtPrezzoBnB.setDisable(false);
+        			cmbTipo.setDisable(false);
+        			txtOspiti.setDisable(false);
+        			cmbRecensioni.setDisable(false);
+        			btnClearAirBnBs.setDisable(false);
+        			btnSearchAirBnBs.setDisable(false);
+        			tblBnB.setDisable(false);
+        			
+        		}
+    		}
     		
+    		Collections.sort(result);
+    		
+    		clFare.setCellValueFactory(new PropertyValueFactory<Itinerario, String>("fare"));
+    		clStops.setCellValueFactory(new PropertyValueFactory<Itinerario, String>("stops"));
+    		clItinerary.setCellValueFactory(new PropertyValueFactory<Itinerario, String>("itinerary"));
+    		clPrices.setCellValueFactory(new PropertyValueFactory<Itinerario, String>("prices"));
+    		
+    		tblVolo.setItems(FXCollections.observableArrayList(result));
     	}
-    	
-    	
     }
-    
-    @FXML
-    void handleCercaBnBs(ActionEvent event) {
 
-    }
-    
     @FXML
     void handleClearAirBnB(ActionEvent event) {
 
@@ -195,27 +207,35 @@ public class FXMLController {
 
     @FXML
     void handleClearVoli(ActionEvent event) {
-
+    	txtPrezzoVolo.clear();
+    	cmbScali.getSelectionModel().clearSelection();
+    	cmbPartenza.getSelectionModel().clearSelection();
+    	cmbArrivo.getSelectionModel().clearSelection();
+    	
+    	cmbRating.setDisable(true);
+		txtPrezzoBnB.setDisable(true);
+		cmbTipo.setDisable(true);
+		txtOspiti.setDisable(true);
+		cmbRecensioni.setDisable(true);
+		btnClearAirBnBs.setDisable(true);
+		btnSearchAirBnBs.setDisable(true);
+		tblBnB.setDisable(true);
     }
 
     @FXML
     void initialize() {
-    	assert clDeparture != null : "fx:id=\"clDeparture\" was not injected: check your FXML file 'Scene.fxml'.";
-    	assert clArrival != null : "fx:id=\"clArrival\" was not injected: check your FXML file 'Scene.fxml'.";
-        assert clAeroportoArrivo != null : "fx:id=\"clAeroportoArrivo\" was not injected: check your FXML file 'Scene.fxml'.";
-        assert clAeroportoPartenza != null : "fx:id=\"clAeroportoPartenza\" was not injected: check your FXML file 'Scene.fxml'.";
-        assert clCittaArrivo != null : "fx:id=\"clCittaArrivo\" was not injected: check your FXML file 'Scene.fxml'.";
-        assert clCittaPartenza != null : "fx:id=\"clCittaPartenza\" was not injected: check your FXML file 'Scene.fxml'.";
+    	assert btnClearAirBnBs != null : "fx:id=\"btnClearAirBnBs\" was not injected: check your FXML file 'Scene.fxml'.";
+    	assert btnSearchAirBnBs != null : "fx:id=\"btnSearchAirBnBs\" was not injected: check your FXML file 'Scene.fxml'.";
+        assert clFare != null : "fx:id=\"clFare\" was not injected: check your FXML file 'Scene.fxml'.";
+        assert clItinerary != null : "fx:id=\"clItinerary\" was not injected: check your FXML file 'Scene.fxml'.";
         assert clNome != null : "fx:id=\"clNome\" was not injected: check your FXML file 'Scene.fxml'.";
         assert clOspiti != null : "fx:id=\"clOspiti\" was not injected: check your FXML file 'Scene.fxml'.";
         assert clPrezzo != null : "fx:id=\"clPrezzo\" was not injected: check your FXML file 'Scene.fxml'.";
-        assert clPrezzoVolo != null : "fx:id=\"clPrezzoVolo\" was not injected: check your FXML file 'Scene.fxml'.";
+        assert clPrices != null : "fx:id=\"clPrices\" was not injected: check your FXML file 'Scene.fxml'.";
         assert clQuartiere != null : "fx:id=\"clQuartiere\" was not injected: check your FXML file 'Scene.fxml'.";
         assert clRating != null : "fx:id=\"clRating\" was not injected: check your FXML file 'Scene.fxml'.";
         assert clRecensioni != null : "fx:id=\"clRecensioni\" was not injected: check your FXML file 'Scene.fxml'.";
-        assert clScali != null : "fx:id=\"clScali\" was not injected: check your FXML file 'Scene.fxml'.";
-        assert clStatoArrivo != null : "fx:id=\"clStatoArrivo\" was not injected: check your FXML file 'Scene.fxml'.";
-        assert clStatoPartenza != null : "fx:id=\"clStatoPartenza\" was not injected: check your FXML file 'Scene.fxml'.";
+        assert clStops != null : "fx:id=\"clStops\" was not injected: check your FXML file 'Scene.fxml'.";
         assert clTipo != null : "fx:id=\"clTipo\" was not injected: check your FXML file 'Scene.fxml'.";
         assert cmbArrivo != null : "fx:id=\"cmbArrivo\" was not injected: check your FXML file 'Scene.fxml'.";
         assert cmbPartenza != null : "fx:id=\"cmbPartenza\" was not injected: check your FXML file 'Scene.fxml'.";
@@ -223,33 +243,33 @@ public class FXMLController {
         assert cmbRecensioni != null : "fx:id=\"cmbRecensioni\" was not injected: check your FXML file 'Scene.fxml'.";
         assert cmbScali != null : "fx:id=\"cmbScali\" was not injected: check your FXML file 'Scene.fxml'.";
         assert cmbTipo != null : "fx:id=\"cmbTipo\" was not injected: check your FXML file 'Scene.fxml'.";
+        assert lblErroreAirBnB != null : "fx:id=\"lblErroreAirBnB\" was not injected: check your FXML file 'Scene.fxml'.";
+        assert lblErroreVolo != null : "fx:id=\"lblErroreVolo\" was not injected: check your FXML file 'Scene.fxml'.";
         assert tblBnB != null : "fx:id=\"tblBnB\" was not injected: check your FXML file 'Scene.fxml'.";
-        assert tblVoli != null : "fx:id=\"tblVoli\" was not injected: check your FXML file 'Scene.fxml'.";
+        assert tblVolo != null : "fx:id=\"tblVolo\" was not injected: check your FXML file 'Scene.fxml'.";
         assert txtOspiti != null : "fx:id=\"txtOspiti\" was not injected: check your FXML file 'Scene.fxml'.";
         assert txtPrezzoBnB != null : "fx:id=\"txtPrezzoBnB\" was not injected: check your FXML file 'Scene.fxml'.";
         assert txtPrezzoVolo != null : "fx:id=\"txtPrezzoVolo\" was not injected: check your FXML file 'Scene.fxml'.";
-        assert lblErroreAirBnB != null : "fx:id=\"lblErroreAirBnB\" was not injected: check your FXML file 'Scene.fxml'.";
-        assert lblErroreVolo != null : "fx:id=\"lblErroreVolo\" was not injected: check your FXML file 'Scene.fxml'.";
-        
-    }
-    
-    public void setModel(Model model) {
-    	this.model = model;
-    	
-    	this.model.loadAll();
-    	
-    	List<String> temp = new ArrayList<String>();
-    	for(Aeroporto a : this.model.getAeroporti()) {
-    		temp.add(a.getName());
-    	}
-    	
-    	Collections.sort(temp);
-    	cmbPartenza.getItems().addAll(temp);
-    	cmbArrivo.getItems().addAll(temp);
-    	
-    	cmbScali.getItems().add("Non-Stop");
-    	cmbScali.getItems().add("1 Stop");
-    	cmbScali.getItems().add("2 Stops");
+
     }
 
+    public void setModel(Model model) {
+	    this.model = model;
+		
+		this.model.loadAll();
+		
+		List<String> temp = new ArrayList<String>();
+		for(Aeroporto a : this.model.getAeroporti()) {
+			temp.add(a.getName());
+		}
+		
+		Collections.sort(temp);
+		cmbPartenza.getItems().addAll(temp);
+		cmbArrivo.getItems().addAll(temp);
+		
+		cmbScali.getItems().add("Non-Stop");
+		cmbScali.getItems().add("1 Stop");
+		cmbScali.getItems().add("2 Stops");
+    }
+    
 }

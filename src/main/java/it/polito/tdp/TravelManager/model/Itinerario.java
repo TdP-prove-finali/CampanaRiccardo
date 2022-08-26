@@ -3,103 +3,121 @@ package it.polito.tdp.TravelManager.model;
 import java.util.List;
 import java.util.Objects;
 
-public class Itinerario {
-	
-	private List<Adiacenza> scali;
+public class Itinerario implements Comparable<Itinerario>{
+
 	private Aeroporto Departure;
 	private Aeroporto Arrival;
-	private List<Double> prezzi;
-	private double prezzo = 0;
-	private int stops;
+	private String fare = "";
+	private List<Adiacenza> journey;
+	private List<Double> pricesList;
+	private String stops = "";
+	private String itinerary = "";
+	private String prices = "";
 	
-	public Itinerario(List<Adiacenza> scali, List<Double> prezzi) {
-		this.scali = scali;
-		this.prezzi = prezzi;
-		stops = scali.size() - 1;
-		this.Departure = scali.get(0).getOrigine();
-		this.Arrival = scali.get(scali.size()-1).getDest();
+	public Itinerario(Aeroporto departure, Aeroporto arrival, List<Adiacenza> journey, List<Double> priceslist) {
+		Departure = departure;
+		Arrival = arrival;
+		this.journey = journey;
+		this.pricesList = priceslist;
 		
-		for(Double p : prezzi) {
-			prezzo += p;
+		if(this.journey.size() == 1) {
+			stops += "Non-Stop";
 		}
+		
+		if(this.journey.size() == 2) {
+			stops += "1 Stop";
+		}
+		
+		if(this.journey.size() == 3) {
+			stops += "2 Stops";
+		}
+		
+		int temp = 0;
+		for(Double d : pricesList) {
+			temp += d;
+			prices += "$" + (int)d.doubleValue() + ", ";
+		}
+		
+		fare = "$" + temp;
+		
+		prices = prices.substring(0, prices.length()-2);
+		
+		itinerary += Departure.getIATA() + "[" +Departure.getCity() + "]  ->  ";
+		
+		for(Adiacenza a : journey) {
+			itinerary += a.getDest().getIATA() + "[" + a.getDest().getCity() + "]  ->  ";
+		}
+		
+		itinerary = itinerary.substring(0, itinerary.length()-5);
 	}
-
-	public List<Adiacenza> getScali() {
-		return scali;
-	}
-
-
-
-	public void setScali(List<Adiacenza> scali) {
-		this.scali = scali;
-	}
-
-
 
 	public Aeroporto getDeparture() {
 		return Departure;
 	}
 
-
-
 	public void setDeparture(Aeroporto departure) {
 		Departure = departure;
 	}
-
-
 
 	public Aeroporto getArrival() {
 		return Arrival;
 	}
 
-
-
 	public void setArrival(Aeroporto arrival) {
 		Arrival = arrival;
 	}
 
-
-
-	public List<Double> getPrezzi() {
-		return prezzi;
+	public String getFare() {
+		return fare;
 	}
 
-
-
-	public void setPrezzi(List<Double> prezzi) {
-		this.prezzi = prezzi;
+	public void setFare(String fare) {
+		this.fare = fare;
 	}
 
-
-
-	public double getPrezzo() {
-		return prezzo;
+	public List<Adiacenza> getJourney() {
+		return journey;
 	}
 
-
-
-	public void setPrezzo(double prezzo) {
-		this.prezzo = prezzo;
+	public void setJourney(List<Adiacenza> journey) {
+		this.journey = journey;
 	}
 
+	public List<Double> getPricesList() {
+		return pricesList;
+	}
 
+	public void setPricesList(List<Double> pricesList) {
+		this.pricesList = pricesList;
+	}
 
-	public int getStops() {
+	public String getStops() {
 		return stops;
 	}
 
-
-
-	public void setStops(int stops) {
+	public void setStops(String stops) {
 		this.stops = stops;
 	}
 
-	
+	public String getItinerary() {
+		return itinerary;
+	}
 
+	public void setItinerary(String itinerary) {
+		this.itinerary = itinerary;
+	}
+
+	public String getPrices() {
+		return prices;
+	}
+
+	public void setPrices(String prices) {
+		this.prices = prices;
+	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(prezzi, scali);
+		return Objects.hash(Arrival, Departure, journey, prices);
 	}
 
 	@Override
@@ -111,12 +129,14 @@ public class Itinerario {
 		if (getClass() != obj.getClass())
 			return false;
 		Itinerario other = (Itinerario) obj;
-		return Objects.equals(prezzi, other.prezzi) && Objects.equals(scali, other.scali);
+		return Objects.equals(Arrival, other.Arrival) && Objects.equals(Departure, other.Departure)
+				&& Objects.equals(journey, other.journey) && Objects.equals(prices, other.prices);
 	}
 
 	@Override
-	public String toString() {
-		return "Viaggio da: " + scali.get(0).getOrigine() + " a " + scali.get(scali.size()-1).getDest() +  " ,composto da: " + stops + " scali";
+	public int compareTo(Itinerario o) {
+		// TODO Auto-generated method stub
+		return this.fare.substring(1).compareTo(o.getFare().substring(1));
 	}
-
+	
 }

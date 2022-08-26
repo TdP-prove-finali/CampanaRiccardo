@@ -15,7 +15,12 @@ public class TestModel {
 //		for(List<Adiacenza> list : result) {
 //			System.out.println(list);
 //		}
-//		
+		
+		List<Itinerario> result = model.percorso(model.mappaAeroporti.get("LAX").getName(), model.mappaAeroporti.get("JFK").getName(), 0, 730);
+		
+		for(Itinerario i : result) {
+			System.out.println(i);
+		}
 	}
 
 }

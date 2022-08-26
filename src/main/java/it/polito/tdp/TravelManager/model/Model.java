@@ -105,7 +105,7 @@ public class Model {
 				prezzi.add(a.getPrezzo());
 			}
 			
-			finaleItinerari.add(new Itinerario(percorso, prezzi));
+			finaleItinerari.add(new Itinerario(percorso.get(0).getOrigine(), percorso.get(percorso.size()-1).getDest(), percorso, prezzi));
 		}
 		
 		return finaleItinerari;
@@ -153,6 +153,10 @@ public class Model {
 
 		
 		return tot;
+	}
+	
+	public Map<String, Aeroporto> getMappaNomi(){
+		return this.mappaNomi;
 	}
 	
 }
