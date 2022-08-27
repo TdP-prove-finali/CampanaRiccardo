@@ -165,7 +165,7 @@
                      <VBox.margin>
                         <Insets bottom="5.0" />
                      </VBox.margin></Label>
-                  <TableView fx:id="tblBnB" disable="true" maxWidth="700.0" prefHeight="200.0" prefWidth="700.0">
+                  <TableView fx:id="tblBnB" disable="true" maxWidth="700.0" onMouseClicked="#handleBnBChoice" prefHeight="200.0" prefWidth="700.0">
                     <columns>
                       <TableColumn fx:id="clNome" prefWidth="100.0" text="Name" />
                         <TableColumn fx:id="clQuartiere" prefWidth="100.0" text="Neighbourood" />

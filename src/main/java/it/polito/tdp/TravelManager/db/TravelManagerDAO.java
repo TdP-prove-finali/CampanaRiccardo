@@ -95,10 +95,11 @@ public class TravelManagerDAO {
 	}
 
 	public List<Adiacenza> loadAllAdiacenze(Map<String, Aeroporto> mappaAeroporti){
-		String sql = "SELECT c.origin, c.dest, AVG(t.itinFare) as AVG "
-				+ "FROM Coupon c, Ticket t "
-				+ "WHERE c.itinID = t.itinID "
-				+ "GROUP BY c.Origin, c.Dest";
+		String sql = "SELECT coupon.origin, coupon.dest, AVG(ticket.itinFare) "
+				+ "FROM coupon, ticket "
+				+ "WHERE coupon.itinID = ticket.itinID "
+				+ "GROUP BY coupon.origin, coupon.dest";
+		
 		List<Adiacenza> result = new ArrayList<Adiacenza>();
 		
 		try {
@@ -107,7 +108,7 @@ public class TravelManagerDAO {
 			ResultSet rs = st.executeQuery();
 
 			while (rs.next()) {
-				result.add(new Adiacenza(mappaAeroporti.get(rs.getString("origin")), mappaAeroporti.get(rs.getString("dest")), rs.getDouble("AVG")));
+				result.add(new Adiacenza(mappaAeroporti.get(rs.getString("origin")), mappaAeroporti.get(rs.getString("dest")), rs.getDouble("AVG(ticket.itinFare)")));
 			}
 			
 			conn.close();

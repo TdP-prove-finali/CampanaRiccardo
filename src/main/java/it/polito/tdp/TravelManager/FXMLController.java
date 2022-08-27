@@ -119,19 +119,91 @@ public class FXMLController {
     
     @FXML
     void handleBnBChoice(MouseEvent event) {
-
-    }
-
-    @FXML
-    void handleCercaBnBs(ActionEvent event) {
     	choiceBnB = tblBnB.getSelectionModel().getSelectedItem();
         
     	if (choiceBnB != null){
     		
-    		//aggiungo a total il prezzo del bnb ricordando che devo fare l'esponenziale
+    		String total = txtTotal.getText();
     		
-    		txtTotal.setText("");
+    		int flight = 0;
+			try {
+				flight = Integer.parseInt(total.substring(1));
+			} catch (NumberFormatException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    		
+    		int newTotal = (int) (flight + Math.exp(choiceBnB.getLog_price()));
+    		
+    		txtTotal.setText("$" + newTotal);
     	}
+    }
+
+    @FXML
+    void handleCercaBnBs(ActionEvent event) {
+    	lblErroreAirBnB.setTextFill(Color.RED);
+    	
+    	int prezzo = -1;
+    	int accommodations = -1;
+    	int rating = -1;
+    	int reviews = -1;
+    	String type = "";
+    	
+    	if(cmbTipo.getValue() != null && cmbTipo.getValue().compareTo("") != 0) {
+    		type = cmbTipo.getValue();
+    	} else {
+    		lblErroreAirBnB.setText("Select a property type");
+    	}
+    	
+    	if(cmbRating.getValue() != null && cmbRating.getValue().compareTo("") != 0) {
+    		try {
+				rating = Integer.parseInt(cmbRating.getValue().substring(0, cmbRating.getValue().length()-1));
+			} catch (NumberFormatException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    	} else {
+    		lblErroreAirBnB.setText("Select a rating preference");
+    	}
+    	
+    	if(cmbRecensioni.getValue() != null && cmbRecensioni.getValue().compareTo("") != 0) {
+    		try {
+				reviews = Integer.parseInt(cmbRecensioni.getValue().substring(0, cmbRecensioni.getValue().length()-1));
+			} catch (NumberFormatException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    	} else {
+    		lblErroreAirBnB.setText("Select a review count preference");
+    	}
+    	
+    	if(txtOspiti.getText() != null && txtOspiti.getText().compareTo("") != 0) {
+    		try {
+				accommodations = Integer.parseInt(txtOspiti.getText());
+			} catch (NumberFormatException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    	} else {
+    		lblErroreAirBnB.setText("Accommodation preference missing");
+    	}
+    	
+    	if(txtPrezzoBnB.getText() != null && txtPrezzoBnB.getText().compareTo("") != 0) {
+    		try {
+				prezzo = Integer.parseInt(txtPrezzoBnB.getText());
+			} catch (NumberFormatException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    	} else {
+    		lblErroreAirBnB.setText("Price cap missing");
+    	}
+    	
+    	if(!type.isBlank() && prezzo > 0 && accommodations > 0 && reviews >= 0 && rating >= 0) {
+    		
+    	}
+    	
+    	
     }
 
     @FXML
@@ -152,13 +224,13 @@ public class FXMLController {
     	double price = 0;
     	int stops = -1;
     	
-    	if(cmbPartenza.getValue() != null && cmbPartenza.getValue() != "") {
+    	if(cmbPartenza.getValue() != null && cmbPartenza.getValue().compareTo("") != 0) {
     		departure = cmbPartenza.getValue();
     	} else {
     		lblErroreVolo.setText("Select a departure Airport");
     	}
     	
-    	if(cmbArrivo.getValue() != null && cmbArrivo.getValue() != "") {
+    	if(cmbArrivo.getValue() != null && cmbArrivo.getValue().compareTo("") != 0) {
     		arrival = cmbArrivo.getValue();
     	} else {
     		lblErroreVolo.setText("Select an arrival Airport");
@@ -172,7 +244,7 @@ public class FXMLController {
     		lblErroreVolo.setText("Price option not valid");
     	}
     	
-    	if(cmbScali.getValue() != null && cmbScali.getValue() != "") {
+    	if(cmbScali.getValue() != null && cmbScali.getValue().compareTo("") != 0) {
     		String Sstops = cmbScali.getValue();
     		if(Sstops.compareTo("Non-Stop") == 0) {
     			stops = 0;
@@ -302,8 +374,6 @@ public class FXMLController {
         assert txtPrezzoBnB != null : "fx:id=\"txtPrezzoBnB\" was not injected: check your FXML file 'Scene.fxml'.";
         assert txtPrezzoVolo != null : "fx:id=\"txtPrezzoVolo\" was not injected: check your FXML file 'Scene.fxml'.";
         assert txtTotal != null : "fx:id=\"txtTotal\" was not injected: check your FXML file 'Scene.fxml'.";
-
-
     }
 
     public void setModel(Model model) {
@@ -311,8 +381,10 @@ public class FXMLController {
 		
 		this.model.loadAll();
 		
+		System.out.println("loadAll() finito");
+		
 		List<String> temp = new ArrayList<String>();
-		for(Aeroporto a : this.model.getAeroporti()) {
+		for(Aeroporto a : this.model.getAeroporti()) {			
 			temp.add(a.getName());
 		}
 		
@@ -320,20 +392,29 @@ public class FXMLController {
 		cmbPartenza.getItems().addAll(temp);
 		cmbArrivo.getItems().addAll(temp);
 		
+		System.out.println("cmbPartenza e cmbArrivo riempite");
+		
 		cmbScali.getItems().add("Non-Stop");
 		cmbScali.getItems().add("1 Stop");
 		cmbScali.getItems().add("2 Stops");
 		
+		System.out.println("cmbScali riempita");
+		
 		cmbTipo.getItems().addAll(this.model.loadTypes());
+		
+		System.out.println("cmbTipo riempita");
 		
 		for(int i=0; i<100; i+=10) {
 			cmbRating.getItems().add(i + "+");
 		}
 		
+		System.out.println("cmbRating riempita");
+		
 		for(int j=0; j<=600; j+=25) {
 			cmbRecensioni.getItems().add(j + "+");
 		}
 		
+		System.out.println("cmbRecensioni riempita");
 		
     }
     
