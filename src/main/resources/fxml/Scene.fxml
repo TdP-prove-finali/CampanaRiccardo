@@ -73,12 +73,12 @@
                <VBox.margin>
                   <Insets bottom="5.0" />
                </VBox.margin></Label>
-            <TableView fx:id="tblVolo" maxWidth="700.0" onMouseClicked="#handleFlightChoice" prefHeight="200.0" prefWidth="700.0">
+            <TableView fx:id="tblVolo" maxWidth="700.0" minHeight="200.0" minWidth="700.0" onMouseClicked="#handleFlightChoice" prefHeight="200.0" prefWidth="700.0">
               <columns>
-                <TableColumn fx:id="clFare" prefWidth="70.0" text="Fare" />
-                <TableColumn fx:id="clStops" prefWidth="70.0" text="Stops" />
-                  <TableColumn fx:id="clItinerary" prefWidth="420.0" text="Itinerary" />
-                  <TableColumn fx:id="clPrices" prefWidth="140.0" text="Prices" />
+                <TableColumn fx:id="clFare" minWidth="70.0" prefWidth="70.0" text="Fare" />
+                <TableColumn fx:id="clStops" minWidth="70.0" prefWidth="70.0" text="Stops" />
+                  <TableColumn fx:id="clItinerary" minWidth="420.0" prefWidth="420.0" text="Itinerary" />
+                  <TableColumn fx:id="clPrices" minWidth="140.0" prefWidth="140.0" text="Prices" />
               </columns>
                <VBox.margin>
                   <Insets left="10.0" right="10.0" />
@@ -158,22 +158,22 @@
                         </Button>
                      </children>
                      <VBox.margin>
-                        <Insets top="10.0" />
+                        <Insets bottom="10.0" top="10.0" />
                      </VBox.margin>
                   </HBox>
                   <Label fx:id="lblErroreAirBnB" textFill="RED">
                      <VBox.margin>
                         <Insets bottom="5.0" />
                      </VBox.margin></Label>
-                  <TableView fx:id="tblBnB" disable="true" maxWidth="700.0" onMouseClicked="#handleBnBChoice" prefHeight="200.0" prefWidth="700.0">
+                  <TableView fx:id="tblBnB" disable="true" maxWidth="700.0" minHeight="200.0" minWidth="700.0" onMouseClicked="#handleBnBChoice" prefHeight="200.0" prefWidth="700.0">
                     <columns>
-                      <TableColumn fx:id="clNome" prefWidth="100.0" text="Name" />
-                        <TableColumn fx:id="clQuartiere" prefWidth="100.0" text="Neighbourood" />
-                        <TableColumn fx:id="clTipo" prefWidth="100.0" text="Type" />
-                        <TableColumn fx:id="clOspiti" prefWidth="100.0" text="Accomodations" />
-                        <TableColumn fx:id="clPrezzo" prefWidth="100.0" text="Price" />
-                        <TableColumn fx:id="clRating" prefWidth="100.0" text="Rating" />
-                        <TableColumn fx:id="clRecensioni" prefWidth="100.0" text="Reviews" />
+                      <TableColumn fx:id="clNome" minWidth="100.0" prefWidth="200.0" text="Name" />
+                        <TableColumn fx:id="clQuartiere" minWidth="100.0" prefWidth="100.0" text="Neighbourhood" />
+                        <TableColumn fx:id="clTipo" minWidth="100.0" prefWidth="100.0" text="Type" />
+                        <TableColumn fx:id="clOspiti" minWidth="75.0" prefWidth="75.0" text="Beds" />
+                        <TableColumn fx:id="clPrezzo" minWidth="75.0" prefWidth="75.0" text="Price" />
+                        <TableColumn fx:id="clRating" minWidth="75.0" prefWidth="75.0" text="Rating" />
+                        <TableColumn fx:id="clRecensioni" minWidth="75.0" prefWidth="75.0" text="Reviews" />
                     </columns>
                      <VBox.margin>
                         <Insets bottom="20.0" left="52.5" right="52.5" />

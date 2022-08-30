@@ -27,8 +27,8 @@ public class FXMLController {
 	
 	Model model;
 	String arrival_city;
-	Itinerario choice;
-	AirBnB choiceBnB;
+	Itinerario flightChoice;
+	AirBnB bnbChoice;
 
     @FXML
     private ResourceBundle resources;
@@ -55,7 +55,7 @@ public class FXMLController {
     private TableColumn<AirBnB, Integer> clOspiti;
 
     @FXML
-    private TableColumn<AirBnB, Integer> clPrezzo;
+    private TableColumn<AirBnB, String> clPrezzo;
 
     @FXML
     private TableColumn<Itinerario, String> clPrices;
@@ -64,7 +64,7 @@ public class FXMLController {
     private TableColumn<AirBnB, String> clQuartiere;
 
     @FXML
-    private TableColumn<AirBnB, Integer> clRating;
+    private TableColumn<AirBnB, String> clRating;
 
     @FXML
     private TableColumn<AirBnB, Integer> clRecensioni;
@@ -119,21 +119,13 @@ public class FXMLController {
     
     @FXML
     void handleBnBChoice(MouseEvent event) {
-    	choiceBnB = tblBnB.getSelectionModel().getSelectedItem();
+    	bnbChoice = tblBnB.getSelectionModel().getSelectedItem();
         
-    	if (choiceBnB != null){
+    	if (bnbChoice != null){
     		
-    		String total = txtTotal.getText();
-    		
-    		int flight = 0;
-			try {
-				flight = Integer.parseInt(total.substring(1));
-			} catch (NumberFormatException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-    		
-    		int newTotal = (int) (flight + Math.exp(choiceBnB.getLog_price()));
+    		int flight = Integer.parseInt(flightChoice.getFare().substring(1));
+			
+    		int newTotal = (int) (flight + Math.exp(bnbChoice.getLog_price()));
     		
     		txtTotal.setText("$" + newTotal);
     	}
@@ -143,7 +135,7 @@ public class FXMLController {
     void handleCercaBnBs(ActionEvent event) {
     	lblErroreAirBnB.setTextFill(Color.RED);
     	
-    	int prezzo = -1;
+    	int bnbPrice = -1;
     	int accommodations = -1;
     	int rating = -1;
     	int reviews = -1;
@@ -190,7 +182,7 @@ public class FXMLController {
     	
     	if(txtPrezzoBnB.getText() != null && txtPrezzoBnB.getText().compareTo("") != 0) {
     		try {
-				prezzo = Integer.parseInt(txtPrezzoBnB.getText());
+				bnbPrice = Integer.parseInt(txtPrezzoBnB.getText());
 			} catch (NumberFormatException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -199,8 +191,31 @@ public class FXMLController {
     		lblErroreAirBnB.setText("Price cap missing");
     	}
     	
-    	if(!type.isBlank() && prezzo > 0 && accommodations > 0 && reviews >= 0 && rating >= 0) {
+    	if(!type.isBlank() && bnbPrice > 0 && accommodations > 0 && reviews >= 0 && rating >= 0) {
+    		lblErroreAirBnB.setText("");
+    		List<AirBnB> result = this.model.ricercaBnb(type, bnbPrice, accommodations, reviews, rating, arrival_city);
     		
+    		if(!result.isEmpty()) {
+    			
+    			lblErroreAirBnB.setTextFill(Color.BLACK);
+    			lblErroreAirBnB.setText("Select your choice");
+    			
+    			Collections.sort(result);
+        		
+        		clNome.setCellValueFactory(new PropertyValueFactory<AirBnB, String>("name"));
+        		clQuartiere.setCellValueFactory(new PropertyValueFactory<AirBnB, String>("neighbourhood"));
+        		clTipo.setCellValueFactory(new PropertyValueFactory<AirBnB, String>("property_type"));
+        		clNome.setCellValueFactory(new PropertyValueFactory<AirBnB, String>("name"));
+        		clOspiti.setCellValueFactory(new PropertyValueFactory<AirBnB, Integer>("accomodates"));
+        		clPrezzo.setCellValueFactory(new PropertyValueFactory<AirBnB, String>("prezzoS"));
+        		clRating.setCellValueFactory(new PropertyValueFactory<AirBnB, String>("review_scores_rating"));
+        		clRecensioni.setCellValueFactory(new PropertyValueFactory<AirBnB, Integer>("number_of_reviews"));
+        		
+        		tblBnB.setItems(FXCollections.observableArrayList(result));
+    			
+    		} else {
+    			lblErroreAirBnB.setText("No results in Database");
+    		}
     	}
     	
     	
@@ -274,7 +289,7 @@ public class FXMLController {
         				|| this.model.getMappaNomi().get(arrival).getCity().compareTo("San Francisco") == 0
         				|| this.model.getMappaNomi().get(arrival).getCity().compareTo("Chicago") == 0
         				|| this.model.getMappaNomi().get(arrival).getCity().compareTo("Boston") == 0
-        				|| this.model.getMappaNomi().get(arrival).getCity().compareTo("Washington D.C.") == 0) {
+        				|| this.model.getMappaNomi().get(arrival).getCity().compareTo("Washington") == 0) {
         			
     				arrival_city = this.model.getMappaNomi().get(arrival).getCity();
     				this.model.loadBnBs();
@@ -306,10 +321,10 @@ public class FXMLController {
 
     @FXML
     void handleFlightChoice(MouseEvent event) {
-    	choice = tblVolo.getSelectionModel().getSelectedItem();
+    	flightChoice = tblVolo.getSelectionModel().getSelectedItem();
         
-    	if (choice != null){
-    		txtTotal.setText(choice.getFare());
+    	if (flightChoice != null){
+    		txtTotal.setText(flightChoice.getFare());
     	}
     }
     
@@ -321,7 +336,10 @@ public class FXMLController {
     	txtPrezzoBnB.clear();
     	txtOspiti.clear();
     	tblBnB.getItems().clear();
-    	txtTotal.clear();
+    	txtTotal.setText(flightChoice.getFare());
+    	
+    	lblErroreAirBnB.setText("");
+    	lblErroreAirBnB.setTextFill(Color.RED);
     }
 
     @FXML
@@ -333,6 +351,7 @@ public class FXMLController {
     	tblVolo.getItems().clear();
     	txtTotal.clear();
     	
+    	lblErroreVolo.setText("");
     	lblErroreVolo.setTextFill(Color.RED);
     	
     	cmbRating.setDisable(true);
@@ -381,8 +400,6 @@ public class FXMLController {
 		
 		this.model.loadAll();
 		
-		System.out.println("loadAll() finito");
-		
 		List<String> temp = new ArrayList<String>();
 		for(Aeroporto a : this.model.getAeroporti()) {			
 			temp.add(a.getName());
@@ -392,30 +409,19 @@ public class FXMLController {
 		cmbPartenza.getItems().addAll(temp);
 		cmbArrivo.getItems().addAll(temp);
 		
-		System.out.println("cmbPartenza e cmbArrivo riempite");
-		
 		cmbScali.getItems().add("Non-Stop");
 		cmbScali.getItems().add("1 Stop");
 		cmbScali.getItems().add("2 Stops");
 		
-		System.out.println("cmbScali riempita");
-		
+		cmbTipo.getItems().add("No Preference");
 		cmbTipo.getItems().addAll(this.model.loadTypes());
-		
-		System.out.println("cmbTipo riempita");
 		
 		for(int i=0; i<100; i+=10) {
 			cmbRating.getItems().add(i + "+");
 		}
 		
-		System.out.println("cmbRating riempita");
-		
 		for(int j=0; j<=600; j+=25) {
 			cmbRecensioni.getItems().add(j + "+");
 		}
-		
-		System.out.println("cmbRecensioni riempita");
-		
     }
-    
 }

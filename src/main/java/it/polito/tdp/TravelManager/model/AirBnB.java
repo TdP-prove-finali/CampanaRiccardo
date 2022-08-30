@@ -2,11 +2,12 @@ package it.polito.tdp.TravelManager.model;
 
 import java.util.Objects;
 
-public class AirBnB {
+public class AirBnB implements Comparable<AirBnB>{
 	
 	private int id;
 	private double log_price;
-	private double prezzo;
+	private int prezzo;
+	private String prezzoS;
 	private String property_type;
 	private int accomodates;
 	private String city;
@@ -27,7 +28,8 @@ public class AirBnB {
 		this.number_of_reviews = number_of_reviews;
 		this.review_scores_rating = review_scores_rating;
 		
-		prezzo = Math.exp(log_price);
+		prezzo = (int) Math.exp(log_price);
+		setPrezzoS("$" + prezzo);
 	}
 
 	public int getId() {
@@ -46,11 +48,11 @@ public class AirBnB {
 		this.log_price = log_price;
 	}
 
-	public double getPrezzo() {
+	public int getPrezzo() {
 		return prezzo;
 	}
 
-	public void setPrezzo(double prezzo) {
+	public void setPrezzo(int prezzo) {
 		this.prezzo = prezzo;
 	}
 
@@ -130,6 +132,20 @@ public class AirBnB {
 	@Override
 	public String toString() {
 		return name + " in " + city;
+	}
+
+	@Override
+	public int compareTo(AirBnB o) {
+		// TODO Auto-generated method stub
+		return (int) (this.prezzo-o.getPrezzo());
+	}
+
+	public String getPrezzoS() {
+		return prezzoS;
+	}
+
+	public void setPrezzoS(String prezzoS) {
+		this.prezzoS = prezzoS;
 	}
 
 }

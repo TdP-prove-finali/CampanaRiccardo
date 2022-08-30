@@ -16,30 +16,29 @@ import it.polito.tdp.TravelManager.db.TravelManagerDAO;
 
 public class Model {
 	
-	TravelManagerDAO dao = new TravelManagerDAO();
-	Map<String, Aeroporto> mappaAeroporti;		//IATA
-	Map<String, Aeroporto> mappaNomi;			//names
-	List<Aeroporto> aeroporti;
-	List<Volo> voli;
-	Graph<Aeroporto, DefaultWeightedEdge> grafo;
-	List<List<DefaultWeightedEdge>> finale;
-	List<Adiacenza> adiacenze;
-	List<AirBnB> bnbs;
+	private TravelManagerDAO dao = new TravelManagerDAO();
+	private Map<String, Aeroporto> IATAMap;		
+	private Map<String, Aeroporto> nameMap;	
+	private List<Aeroporto> airports;
+	private Graph<Aeroporto, DefaultWeightedEdge> grafo;
+	private List<List<DefaultWeightedEdge>> finale;
+	private List<Adiacenza> adiacenze;
+	private List<AirBnB> bnbs;
+	private List<AirBnB> finaleBnb;
+	@SuppressWarnings("unused")
+	private List<Volo> flights;
+	
 	
 	public void loadAll(){
-		aeroporti = new ArrayList<Aeroporto>(this.dao.loadAllAeroporti());
+		airports = new ArrayList<Aeroporto>(this.dao.loadAllAeroporti());
 		
-		System.out.println("AEROPORTI CARICATI");
+		IATAMap = new HashMap<String, Aeroporto>();
+		nameMap = new HashMap<String, Aeroporto>();
 		
-		mappaAeroporti = new HashMap<String, Aeroporto>();
-		mappaNomi = new HashMap<String, Aeroporto>();
-		
-		for(Aeroporto a : aeroporti) {
-			mappaAeroporti.put(a.getIATA(), a);
-			mappaNomi.put(a.getName(), a);
+		for(Aeroporto a : airports) {
+			IATAMap.put(a.getIATA(), a);
+			getNameMap().put(a.getName(), a);
 		}
-		
-		System.out.println("MAPPE AEROPORTI CREATE");
 		
 //		voli = new ArrayList<Volo>(this.dao.loadAllVoli(mappaAeroporti));		//caricare tutti i voli richiede 3 minuti
 //		System.out.println("VOLI CARICATI");
@@ -53,7 +52,7 @@ public class Model {
 //			}
 //		}
 		
-		adiacenze = new ArrayList<Adiacenza>(this.dao.loadAllAdiacenze(mappaAeroporti)); 		//caricare tutte le adiacenze con un'unica query richiede 2 minuti
+		adiacenze = new ArrayList<Adiacenza>(this.dao.loadAllAdiacenze(IATAMap)); 		//caricare tutte le adiacenze con un'unica query richiede 2 minuti
 		
 		System.out.println("ADIACENZE CARICATE");
 		
@@ -62,13 +61,13 @@ public class Model {
 	}
 	
 	public List<Aeroporto> getAeroporti() {
-		return this.aeroporti;
+		return this.airports;
 	}
 	
 	private void creaGrafo() {
 		this.grafo = new SimpleDirectedWeightedGraph<Aeroporto, DefaultWeightedEdge>(DefaultWeightedEdge.class);
 		
-		Graphs.addAllVertices(this.grafo, aeroporti);
+		Graphs.addAllVertices(this.grafo, airports);
 		
 		System.out.println("VERTICI: " + this.grafo.vertexSet().size());		//445 vertici
 		
@@ -88,9 +87,9 @@ public class Model {
 		finale = new ArrayList<List<DefaultWeightedEdge>>();
 		List<DefaultWeightedEdge> parziale = new ArrayList<DefaultWeightedEdge>();
 		List<Aeroporto> listaScali = new ArrayList<Aeroporto>();
-		listaScali.add(mappaNomi.get(origine));
+		listaScali.add(getNameMap().get(origine));
 		
-		percorsoRicorsiva(mappaNomi.get(origine), mappaNomi.get(destinazione), parziale, scali, listaScali, prezzo);
+		percorsoRicorsiva(getNameMap().get(origine), getNameMap().get(destinazione), parziale, scali, listaScali, prezzo);
 		
 		//in questo momento finale contiene liste di archi, devo trasformarle in liste di adiacenze prima di returnarla
 		
@@ -113,11 +112,11 @@ public class Model {
 	}
 
 	private void percorsoRicorsiva(Aeroporto origine, Aeroporto destinazione, List<DefaultWeightedEdge> parziale, int scali, List<Aeroporto> listaScali, double prezzo) {
-		if(listaScali.size() == scali + 2 && !listaScali.get(listaScali.size()-1).equals(destinazione)) {		//caso terminale negativo
+		if(listaScali.size() == scali + 2 && !listaScali.get(listaScali.size()-1).equals(destinazione)) {
 			return;
 		}
 		
-		if(listaScali.size() <= scali + 2 && listaScali.get(listaScali.size()-1).equals(destinazione) && sommaprezzo(parziale) <= prezzo) {		//caso terminale positivo
+		if(listaScali.size() <= scali + 2 && listaScali.get(listaScali.size()-1).equals(destinazione) && sommaprezzo(parziale) <= prezzo) {
 			finale.add(new ArrayList<DefaultWeightedEdge>(parziale));
 			return;
 		}
@@ -157,7 +156,7 @@ public class Model {
 	}
 	
 	public Map<String, Aeroporto> getMappaNomi(){
-		return this.mappaNomi;
+		return this.getNameMap();
 	}
 	
 	public void loadBnBs() {
@@ -166,6 +165,83 @@ public class Model {
 	
 	public List<String> loadTypes(){
 		return this.dao.loadTypes();
+	}
+
+	public List<AirBnB> ricercaBnb(String type, int prezzo, int accommodations, int reviews, int rating, String arrival_city) {
+		finaleBnb = new ArrayList<AirBnB>();
+		List<AirBnB> parziale = new ArrayList<AirBnB>();
+		
+		String arrival = "";
+		
+		if(arrival_city.compareTo("Los Angeles") == 0) {
+			arrival = "LA";
+		}
+		
+		if(arrival_city.compareTo("New York") == 0) {
+			arrival = "NYC";
+		}
+		
+		if(arrival_city.compareTo("Washington") == 0) {
+			arrival = "DC";
+		}
+		
+		if(arrival_city.compareTo("San Francisco") == 0) {
+			arrival = "SF";
+		}
+		
+		if(arrival_city.compareTo("Chicago") == 0) {
+			arrival = arrival_city;
+		}
+		
+		if(arrival_city.compareTo("Boston") == 0) {
+			arrival = arrival_city;
+		}
+		
+		List<AirBnB> bnbsInCity = new ArrayList<AirBnB>();
+		
+		for(AirBnB a : bnbs) {
+			if(a.getCity().compareTo(arrival) == 0) {
+				bnbsInCity.add(a);
+			}
+		}
+		
+		int livello = 0;
+		
+		ricercaBnbRicorsiva(parziale, type, prezzo, accommodations, reviews, rating, livello, bnbsInCity);
+		
+		return finaleBnb;
+	}
+
+	private void ricercaBnbRicorsiva(List<AirBnB> parziale, String type, int prezzo, int accommodations, int reviews,
+			int rating, int livello, List<AirBnB> bnbsInCity) {
+		
+		if(livello == bnbsInCity.size()) {
+			finaleBnb = new ArrayList<AirBnB>(parziale);
+			return;
+		}
+		
+		if(rispettaParametri(bnbsInCity.get(livello), type, prezzo, accommodations, reviews, rating)){
+			parziale.add(bnbsInCity.get(livello));
+		}
+		
+		livello++;
+		ricercaBnbRicorsiva(parziale, type, prezzo, accommodations, reviews, rating, livello, bnbsInCity);
+		
+	}
+
+	private boolean rispettaParametri(AirBnB a, String type, int prezzo, int accommodations, int reviews, int rating) {
+		
+		if(a.getAccomodates() == accommodations && a.getPrezzo() <= prezzo && (a.getProperty_type().compareTo(type) == 0 || type.compareTo("No Preference") == 0) && a.getNumber_of_reviews() >= reviews && Double.parseDouble(a.getReview_scores_rating()) >= rating) {
+			return true;
+		}
+		
+		else {
+			return false;
+		}
+	}
+
+	public Map<String, Aeroporto> getNameMap() {
+		return nameMap;
 	}
 	
 }

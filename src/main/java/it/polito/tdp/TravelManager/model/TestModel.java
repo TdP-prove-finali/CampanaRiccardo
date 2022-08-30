@@ -16,7 +16,7 @@ public class TestModel {
 //			System.out.println(list);
 //		}
 		
-		List<Itinerario> result = model.percorso(model.mappaAeroporti.get("LAX").getName(), model.mappaAeroporti.get("JFK").getName(), 0, 730);
+		List<Itinerario> result = model.percorso(model.getNameMap().get("LAX").getName(), model.getNameMap().get("JFK").getName(), 0, 730);
 		
 		for(Itinerario i : result) {
 			System.out.println(i);

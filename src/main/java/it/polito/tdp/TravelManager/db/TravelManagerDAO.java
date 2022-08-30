@@ -97,7 +97,7 @@ public class TravelManagerDAO {
 	public List<Adiacenza> loadAllAdiacenze(Map<String, Aeroporto> mappaAeroporti){
 		String sql = "SELECT coupon.origin, coupon.dest, AVG(ticket.itinFare) "
 				+ "FROM coupon, ticket "
-				+ "WHERE coupon.itinID = ticket.itinID "
+				+ "WHERE coupon.itinID = ticket.itinID AND ticket.itinFare > 0 "
 				+ "GROUP BY coupon.origin, coupon.dest";
 		
 		List<Adiacenza> result = new ArrayList<Adiacenza>();
