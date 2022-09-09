@@ -39,6 +39,6 @@ public class Adiacenza {
 
 	@Override
 	public String toString() {
-		return "Volo da: " + origine + " a: " + dest + ", con prezzo: " + prezzo;
+		return "Flight from: " + origine + " to: " + dest + ", priced: " + prezzo;
 	}
 }

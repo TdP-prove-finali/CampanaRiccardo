@@ -46,7 +46,16 @@ public class FXMLController {
     private Button btnSearchAirBnBs;
     
     @FXML
+    private Button btnLoad;
+    
+    @FXML
     private Button btnClearAirBnBs;
+    
+    @FXML
+    private Button btnClearFlight;
+    
+    @FXML
+    private Button btnSearchFlight;
 
     @FXML
     private TableColumn<AirBnB, String> clNome;
@@ -231,8 +240,6 @@ public class FXMLController {
 		btnClearAirBnBs.setDisable(true);
 		btnSearchAirBnBs.setDisable(true);
 		tblBnB.setDisable(true);
-		
-		lblErroreVolo.setTextFill(Color.RED);
     	
     	String departure = null;
     	String arrival = null;
@@ -242,12 +249,14 @@ public class FXMLController {
     	if(cmbPartenza.getValue() != null && cmbPartenza.getValue().compareTo("") != 0) {
     		departure = cmbPartenza.getValue();
     	} else {
+    		lblErroreVolo.setTextFill(Color.RED);
     		lblErroreVolo.setText("Select a departure Airport");
     	}
     	
     	if(cmbArrivo.getValue() != null && cmbArrivo.getValue().compareTo("") != 0) {
     		arrival = cmbArrivo.getValue();
     	} else {
+    		lblErroreVolo.setTextFill(Color.RED);
     		lblErroreVolo.setText("Select an arrival Airport");
     	}
     	
@@ -256,6 +265,7 @@ public class FXMLController {
     			price = Integer.parseInt(txtPrezzoVolo.getText());
     		}
     	} catch(NumberFormatException e) {
+    		lblErroreVolo.setTextFill(Color.RED);
     		lblErroreVolo.setText("Price option not valid");
     	}
     	
@@ -272,10 +282,11 @@ public class FXMLController {
     		}
     		
     	} else {
+    		lblErroreVolo.setTextFill(Color.RED);
     		lblErroreVolo.setText("Select how many stops you desire");
     	}
     	
-    	if(!departure.isBlank() && !arrival.isBlank() && price != 0 && stops <= 2 && stops >= 0) {
+    	if(departure != null && arrival != null && price != 0 && stops <= 2 && stops >= 0) {
     		lblErroreVolo.setText("");
     		List<Itinerario> result = this.model.percorso(departure, arrival, stops, price);
     		
@@ -362,10 +373,67 @@ public class FXMLController {
 		btnClearAirBnBs.setDisable(true);
 		btnSearchAirBnBs.setDisable(true);
 		tblBnB.setDisable(true);
+		
+		cmbTipo.getSelectionModel().clearSelection();
+    	cmbRating.getSelectionModel().clearSelection();
+    	cmbRecensioni.getSelectionModel().clearSelection();
+    	txtPrezzoBnB.clear();
+    	txtOspiti.clear();
+    	tblBnB.getItems().clear();
+    	
+    	lblErroreAirBnB.setText("");
+    	lblErroreAirBnB.setTextFill(Color.RED);
+    }
+    
+    @FXML
+    void handleLoad(ActionEvent event) {
+    	lblErroreVolo.setTextFill(Color.BLACK);
+		lblErroreVolo.setText("Please wait. This process could take up to 3 minutes");
+		
+    	this.model.loadAll();
+    	
+    	List<String> temp = new ArrayList<String>();
+		for(Aeroporto a : this.model.getAeroporti()) {			
+			temp.add(a.getName());
+		}
+		
+		Collections.sort(temp);
+		cmbPartenza.getItems().addAll(temp);
+		cmbArrivo.getItems().addAll(temp);
+		
+		cmbScali.getItems().add("Non-Stop");
+		cmbScali.getItems().add("1 Stop");
+		cmbScali.getItems().add("2 Stops");
+		
+		cmbTipo.getItems().add("No Preference");
+		cmbTipo.getItems().addAll(this.model.loadTypes());
+		
+		for(int i=0; i<100; i+=10) {
+			cmbRating.getItems().add(i + "+");
+		}
+		
+		for(int j=0; j<=600; j+=25) {
+			cmbRecensioni.getItems().add(j + "+");
+		}
+		
+		lblErroreVolo.setTextFill(Color.BLACK);
+		lblErroreVolo.setText("DB loaded, you can now start your research");
+		
+		cmbPartenza.setDisable(false);
+		cmbArrivo.setDisable(false);
+		txtPrezzoVolo.setDisable(false);
+		cmbScali.setDisable(false);
+		tblVolo.setDisable(false);
+		btnSearchFlight.setDisable(false);
+		btnClearFlight.setDisable(false);
+		btnLoad.setDisable(true);
     }
 
     @FXML
     void initialize() {
+    	assert btnLoad != null : "fx:id=\"btnLoad\" was not injected: check your FXML file 'Scene.fxml'.";
+    	assert btnClearFlight != null : "fx:id=\"btnClearFlight\" was not injected: check your FXML file 'Scene.fxml'.";
+    	assert btnSearchFlight != null : "fx:id=\"btnSearchFlight\" was not injected: check your FXML file 'Scene.fxml'.";
     	assert btnClearAirBnBs != null : "fx:id=\"btnClearAirBnBs\" was not injected: check your FXML file 'Scene.fxml'.";
     	assert btnSearchAirBnBs != null : "fx:id=\"btnSearchAirBnBs\" was not injected: check your FXML file 'Scene.fxml'.";
         assert clFare != null : "fx:id=\"clFare\" was not injected: check your FXML file 'Scene.fxml'.";
@@ -397,31 +465,8 @@ public class FXMLController {
 
     public void setModel(Model model) {
 	    this.model = model;
-		
-		this.model.loadAll();
-		
-		List<String> temp = new ArrayList<String>();
-		for(Aeroporto a : this.model.getAeroporti()) {			
-			temp.add(a.getName());
-		}
-		
-		Collections.sort(temp);
-		cmbPartenza.getItems().addAll(temp);
-		cmbArrivo.getItems().addAll(temp);
-		
-		cmbScali.getItems().add("Non-Stop");
-		cmbScali.getItems().add("1 Stop");
-		cmbScali.getItems().add("2 Stops");
-		
-		cmbTipo.getItems().add("No Preference");
-		cmbTipo.getItems().addAll(this.model.loadTypes());
-		
-		for(int i=0; i<100; i+=10) {
-			cmbRating.getItems().add(i + "+");
-		}
-		
-		for(int j=0; j<=600; j+=25) {
-			cmbRecensioni.getItems().add(j + "+");
-		}
+	    
+	    lblErroreVolo.setTextFill(Color.RED);
+		lblErroreVolo.setText("Click the Load button to load the DB informations, the process could take up to 3 minutes");
     }
 }

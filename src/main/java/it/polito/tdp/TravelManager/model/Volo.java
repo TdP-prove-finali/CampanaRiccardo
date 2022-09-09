@@ -98,7 +98,7 @@ public class Volo {
 
 	@Override
 	public String toString() {
-		return "Volo " + itinID + " da " + origin + " a " + dest;
+		return "Flight " + itinID + " from " + origin + " to " + dest;
 	}
 
 }

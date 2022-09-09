@@ -17,16 +17,39 @@ import it.polito.tdp.TravelManager.db.TravelManagerDAO;
 public class Model {
 	
 	private TravelManagerDAO dao = new TravelManagerDAO();
+	
 	private Map<String, Aeroporto> IATAMap;		
 	private Map<String, Aeroporto> nameMap;	
 	private List<Aeroporto> airports;
+	
 	private Graph<Aeroporto, DefaultWeightedEdge> grafo;
+	
 	private List<List<DefaultWeightedEdge>> finale;
 	private List<Adiacenza> adiacenze;
+	
 	private List<AirBnB> bnbs;
 	private List<AirBnB> finaleBnb;
-	@SuppressWarnings("unused")
-	private List<Volo> flights;
+	
+//	private List<Volo> flights;
+	
+	
+	public Map<String, Aeroporto> getMappaNomi(){
+		return this.nameMap;
+	}
+	
+	public List<Aeroporto> getAeroporti() {
+		return this.airports;
+	}
+	
+	public void loadBnBs() {
+		bnbs = new ArrayList<AirBnB>(this.dao.loadAllAirBnBs());
+	}
+	
+	public List<String> loadTypes(){
+		return this.dao.loadTypes();
+	}
+	
+	
 	
 	
 	public void loadAll(){
@@ -37,22 +60,38 @@ public class Model {
 		
 		for(Aeroporto a : airports) {
 			IATAMap.put(a.getIATA(), a);
-			getNameMap().put(a.getName(), a);
+			getMappaNomi().put(a.getName(), a);
 		}
+	
 		
-//		voli = new ArrayList<Volo>(this.dao.loadAllVoli(mappaAeroporti));		//caricare tutti i voli richiede 3 minuti
+/**
+ * 		previous edge searching method using a direct query, 3 minutes loading time	
+ */
+		
+//		voli = new ArrayList<Volo>(this.dao.loadAllVoli(mappaAeroporti));		
 //		System.out.println("VOLI CARICATI");
 		
 		
+		
+/**		
+ * 		previous edge searching method using nested for cycles, supposed loading time of several days
+ */
+		
 //		for(Aeroporto a1 : aeroporti) {
-//			for(Aeroporto a2 : aeroporti) {										//caricare le adiacenze con un doppio ciclo for richiede 16 giorni secondo veloci calcoli
+//			for(Aeroporto a2 : aeroporti) {										
 //				if(!a1.equals(a2)) {
 //					adiacenze.add(this.dao.loadAdiacenze(a1, a2));
 //				}
 //			}
 //		}
 		
-		adiacenze = new ArrayList<Adiacenza>(this.dao.loadAllAdiacenze(IATAMap)); 		//caricare tutte le adiacenze con un'unica query richiede 2 minuti
+		
+	
+/**
+ * 		current edge searching method, 2 minutes loading time	
+ */
+	
+		adiacenze = new ArrayList<Adiacenza>(this.dao.loadAllAdiacenze(IATAMap)); 		
 		
 		System.out.println("ADIACENZE CARICATE");
 		
@@ -60,39 +99,48 @@ public class Model {
 		
 	}
 	
-	public List<Aeroporto> getAeroporti() {
-		return this.airports;
-	}
-	
 	private void creaGrafo() {
 		this.grafo = new SimpleDirectedWeightedGraph<Aeroporto, DefaultWeightedEdge>(DefaultWeightedEdge.class);
 		
 		Graphs.addAllVertices(this.grafo, airports);
 		
-		System.out.println("VERTICI: " + this.grafo.vertexSet().size());		//445 vertici
+		//current vertexSet size = 445 
+		System.out.println("VERTICI: " + this.grafo.vertexSet().size());		
 		
+		
+/**
+ * 		previous edge loading method, loaded only the first instance of a flight with origin x and destination y.
+ * 		the edge weight, or flight fare, would not have been accurate.
+ */
 		
 //		for(Volo v : voli) {
-//			Graphs.addEdge(this.grafo, v.getOrigin(), v.getDest(), v.getItinFare()); //aggiunge solo la prima istanza di volo con origine x e destinazione y
+//			Graphs.addEdge(this.grafo, v.getOrigin(), v.getDest(), v.getItinFare()); 
 //		}
 		
+		
+/**
+ *		current edge loading method, the query returns an average fare for all flights with origin x and destination y.
+ *		the edge weight, or flight fare, is now more accurate  
+ */
 		for(Adiacenza a : adiacenze) {
 			Graphs.addEdge(this.grafo, a.getOrigine(), a.getDest(), a.getPrezzo());
 		}	
 				
-		System.out.println("ARCHI: " + this.grafo.edgeSet().size());			//11180 archi
+		//current edgeSet size = 11180 
+		System.out.println("ARCHI: " + this.grafo.edgeSet().size());			
 	}
+	
+	
+	
 	
 	public List<Itinerario> percorso(String origine, String destinazione, int scali, double prezzo){
 		finale = new ArrayList<List<DefaultWeightedEdge>>();
 		List<DefaultWeightedEdge> parziale = new ArrayList<DefaultWeightedEdge>();
 		List<Aeroporto> listaScali = new ArrayList<Aeroporto>();
-		listaScali.add(getNameMap().get(origine));
+		listaScali.add(getMappaNomi().get(origine));
 		
-		percorsoRicorsiva(getNameMap().get(origine), getNameMap().get(destinazione), parziale, scali, listaScali, prezzo);
-		
-		//in questo momento finale contiene liste di archi, devo trasformarle in liste di adiacenze prima di returnarla
-		
+		percorsoRicorsiva(getMappaNomi().get(origine), getMappaNomi().get(destinazione), parziale, scali, listaScali, prezzo);
+
 		List<Itinerario> finaleItinerari = new ArrayList<Itinerario>();
 		
 		for(List<DefaultWeightedEdge> list : finale) {
@@ -150,23 +198,13 @@ public class Model {
 		for(DefaultWeightedEdge d : parziale) {
 			tot += this.grafo.getEdgeWeight(d);
 		}
-
 		
 		return tot;
 	}
-	
-	public Map<String, Aeroporto> getMappaNomi(){
-		return this.getNameMap();
-	}
-	
-	public void loadBnBs() {
-		bnbs = new ArrayList<AirBnB>(this.dao.loadAllAirBnBs());
-	}
-	
-	public List<String> loadTypes(){
-		return this.dao.loadTypes();
-	}
 
+	
+	
+	
 	public List<AirBnB> ricercaBnb(String type, int prezzo, int accommodations, int reviews, int rating, String arrival_city) {
 		finaleBnb = new ArrayList<AirBnB>();
 		List<AirBnB> parziale = new ArrayList<AirBnB>();
@@ -230,18 +268,22 @@ public class Model {
 	}
 
 	private boolean rispettaParametri(AirBnB a, String type, int prezzo, int accommodations, int reviews, int rating) {
+		double rating_bnb = -1;
 		
-		if(a.getAccomodates() == accommodations && a.getPrezzo() <= prezzo && (a.getProperty_type().compareTo(type) == 0 || type.compareTo("No Preference") == 0) && a.getNumber_of_reviews() >= reviews && Double.parseDouble(a.getReview_scores_rating()) >= rating) {
+		try {
+			rating_bnb = Double.parseDouble(a.getReview_scores_rating());
+		} catch (NumberFormatException e) {
+			rating_bnb = 0;
+		}
+		
+		if(a.getAccomodates() == accommodations && a.getPrezzo() <= prezzo && (a.getProperty_type().compareTo(type) == 0 || type.compareTo("No Preference") == 0) &&
+				a.getNumber_of_reviews() >= reviews && rating_bnb >= rating) {
 			return true;
 		}
 		
 		else {
 			return false;
 		}
-	}
-
-	public Map<String, Aeroporto> getNameMap() {
-		return nameMap;
 	}
 	
 }
