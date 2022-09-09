@@ -1,5 +1,4 @@
-# CampanaRiccardo
-USA Travel Planner
+# USA Travel Planner
 
 1. The data-set is quite heavy, therefore it's not included in the repository. Download it from the following DropBox link: https://www.dropbox.com/s/yjz3qq69b2e054g/travel_manager.sql?dl=0 and load it on your DBMS. The download might take several minutes
 
