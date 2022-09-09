@@ -40,6 +40,10 @@ public class TravelManagerDAO {
 		}
 	}
 	
+	
+	/**
+	 * this method is not used in the final and current version of the application
+	 */
 	public List<Volo> loadAllVoli(Map<String, Aeroporto> mappaAeroporti){
 		String sql = "SELECT c.itinID, c.origin, c.dest, t.farepermile, t.passengers, t.itinfare, t.distance "
 				+ "FROM Coupon c, Ticket t "
@@ -65,6 +69,9 @@ public class TravelManagerDAO {
 		}
 	}
 	
+	/**
+	 * this method is not used in the final and current version of the application
+	 */
 	public Adiacenza loadAdiacenze(Aeroporto a1, Aeroporto a2){
 		String sql = "SELECT c.Origin, c.Dest, AVG(t.itinFare) as AVG "
 				+ "FROM Coupon c, Ticket t "
@@ -146,6 +153,9 @@ public class TravelManagerDAO {
 		}
 	}
 	
+	/**
+	 * this method is not used in the final and current version of the application
+	 */
 	public List<AirBnB> searchAirBnBs(double price, String type, int accommodations, String city, int reviews, String rating){
 
 		String sql = "select * "

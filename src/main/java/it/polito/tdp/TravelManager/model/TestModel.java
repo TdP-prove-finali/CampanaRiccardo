@@ -1,11 +1,8 @@
 package it.polito.tdp.TravelManager.model;
 
-import java.util.List;
-
 public class TestModel {
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
 		Model model = new Model();
 		
 		model.loadAll();
@@ -16,11 +13,10 @@ public class TestModel {
 //			System.out.println(list);
 //		}
 		
-		List<Itinerario> result = model.percorso(model.getNameMap().get("LAX").getName(), model.getNameMap().get("JFK").getName(), 0, 730);
+//		List<Itinerario> result = model.percorso(model.getNameMap().get("LAX").getName(), model.getNameMap().get("JFK").getName(), 0, 730);
 		
-		for(Itinerario i : result) {
-			System.out.println(i);
-		}
+//		for(Itinerario i : result) {
+//			System.out.println(i);
+//		}
 	}
-
 }

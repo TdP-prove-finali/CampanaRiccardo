@@ -17,8 +17,8 @@ public class DBConnect {
 		if (ds == null) {
 			HikariConfig config = new HikariConfig();
 			config.setJdbcUrl(jdbcURL);
-			config.setUsername("root");
-			config.setPassword("fulmine27");
+			config.setUsername("root");			//insert your DBMS Username
+			config.setPassword("fulmine27");	//insert your DBMS Password
 			
 			// configurazione MySQL
 			config.addDataSourceProperty("cachePrepStmts", "true");

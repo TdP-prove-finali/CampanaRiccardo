@@ -87,7 +87,7 @@ public class Aeroporto {
 
 	@Override
 	public String toString() {
-		return "Aeroporto " + name + " di " + city;
+		return "Airport " + name + ", in " + city;
 	}
 	
 }
