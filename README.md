@@ -7,4 +7,4 @@ USA Travel Planner
 
 3. Put your DBMS login informations at line 20 and line 21 in DBConnect class, located inside the it.polito.tdp.TravelManager.db package
 
-4. Run the main class to start the application. It might take a couple of minutes to start due to the size of the data-set
+4. Run the Main class to start the application. After it's started, press "Load" to load the DB informations on the application.
