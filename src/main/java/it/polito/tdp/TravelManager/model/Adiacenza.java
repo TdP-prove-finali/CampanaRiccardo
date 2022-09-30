@@ -1,5 +1,7 @@
 package it.polito.tdp.TravelManager.model;
 
+import java.util.Objects;
+
 public class Adiacenza {
 	
 	private Aeroporto origine;
@@ -7,7 +9,6 @@ public class Adiacenza {
 	private double prezzo;
 	
 	public Adiacenza(Aeroporto origine, Aeroporto dest, double prezzo) {
-		super();
 		this.origine = origine;
 		this.dest = dest;
 		this.prezzo = prezzo;
@@ -35,6 +36,24 @@ public class Adiacenza {
 
 	public void setPrezzo(double prezzo) {
 		this.prezzo = prezzo;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(dest, origine, prezzo);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Adiacenza other = (Adiacenza) obj;
+		return Objects.equals(dest, other.dest) && Objects.equals(origine, other.origine)
+				&& Double.doubleToLongBits(prezzo) == Double.doubleToLongBits(other.prezzo);
 	}
 
 	@Override
