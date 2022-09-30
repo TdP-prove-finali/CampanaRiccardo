@@ -276,8 +276,8 @@ public class Model {
 			rating_bnb = 0;
 		}
 		
-		if(a.getAccomodates() == accommodations && a.getPrezzo() <= prezzo && (a.getProperty_type().compareTo(type) == 0 || type.compareTo("No Preference") == 0) &&
-				a.getNumber_of_reviews() >= reviews && rating_bnb >= rating) {
+		if(a.getAccommodates() >= accommodations && a.getPrezzo() <= prezzo && (a.getProperty_type().compareTo(type) == 0 || 
+				type.compareTo("No Preference") == 0) && a.getNumber_of_reviews() >= reviews && rating_bnb >= rating) {
 			return true;
 		}
 		

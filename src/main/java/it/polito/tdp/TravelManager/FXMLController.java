@@ -214,8 +214,7 @@ public class FXMLController {
         		clNome.setCellValueFactory(new PropertyValueFactory<AirBnB, String>("name"));
         		clQuartiere.setCellValueFactory(new PropertyValueFactory<AirBnB, String>("neighbourhood"));
         		clTipo.setCellValueFactory(new PropertyValueFactory<AirBnB, String>("property_type"));
-        		clNome.setCellValueFactory(new PropertyValueFactory<AirBnB, String>("name"));
-        		clOspiti.setCellValueFactory(new PropertyValueFactory<AirBnB, Integer>("accomodates"));
+        		clOspiti.setCellValueFactory(new PropertyValueFactory<AirBnB, Integer>("accommodates"));
         		clPrezzo.setCellValueFactory(new PropertyValueFactory<AirBnB, String>("prezzoS"));
         		clRating.setCellValueFactory(new PropertyValueFactory<AirBnB, String>("review_scores_rating"));
         		clRecensioni.setCellValueFactory(new PropertyValueFactory<AirBnB, Integer>("number_of_reviews"));
@@ -288,6 +287,12 @@ public class FXMLController {
     	
     	if(departure != null && arrival != null && price != 0 && stops <= 2 && stops >= 0) {
     		lblErroreVolo.setText("");
+    		
+    		if(departure.compareTo(arrival) == 0) {
+    			lblErroreVolo.setText("Departure and Arrival airports must be different");
+    			return;
+    		}
+    		
     		List<Itinerario> result = this.model.percorso(departure, arrival, stops, price);
     		
     		if(!result.isEmpty()) {

@@ -138,5 +138,9 @@ public class Itinerario implements Comparable<Itinerario>{
 		// TODO Auto-generated method stub
 		return this.fare.substring(1).compareTo(o.getFare().substring(1));
 	}
-	
+
+	@Override
+	public String toString() {
+		return "itinerary: " + itinerary + ", with prices:" + prices;
+	}
 }

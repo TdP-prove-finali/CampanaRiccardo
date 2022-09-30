@@ -9,7 +9,7 @@ public class AirBnB implements Comparable<AirBnB>{
 	private int prezzo;
 	private String prezzoS;
 	private String property_type;
-	private int accomodates;
+	private int accommodates;
 	private String city;
 	private String name;
 	private String neighbourhood;
@@ -21,7 +21,7 @@ public class AirBnB implements Comparable<AirBnB>{
 		this.id = id;
 		this.log_price = log_price;
 		this.property_type = property_type;
-		this.accomodates = accomodates;
+		this.accommodates = accomodates;
 		this.city = city;
 		this.name = name;
 		this.neighbourhood = neighbourhood;
@@ -64,12 +64,12 @@ public class AirBnB implements Comparable<AirBnB>{
 		this.property_type = property_type;
 	}
 
-	public int getAccomodates() {
-		return accomodates;
+	public int getAccommodates() {
+		return accommodates;
 	}
 
-	public void setAccomodates(int accomodates) {
-		this.accomodates = accomodates;
+	public void setAccommodates(int accomodates) {
+		this.accommodates = accomodates;
 	}
 
 	public String getCity() {
