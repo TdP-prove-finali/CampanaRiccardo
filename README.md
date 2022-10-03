@@ -6,4 +6,6 @@
 
 3. Put your DBMS login informations at line 20 and line 21 in DBConnect class, located inside the it.polito.tdp.TravelManager.db package
 
-4. Run the Main class to start the application. After it's started, press "Load" to load the DB informations on the application.
+4. Run the Main class to start the application. After it's started, press "Load" to load the DB informations on the application. You can now use the software as you prefere.
+
+A brief tutorial video in italian is available at the following YouTube link: https://youtu.be/DXojfuG4Ka8 
