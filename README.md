@@ -1,6 +1,6 @@
 # USA Travel Planner
 
-1. The data-set is quite heavy, therefore it's not included in the repository. Download it from the following DropBox link: https://www.dropbox.com/s/yjz3qq69b2e054g/travel_manager.sql?dl=0 and load it on your DBMS. The download might take several minutes
+1. The data-set is quite heavy, therefore it's not included in the repository. Download it from the following DropBox link: https://www.dropbox.com/s/437kh0cx8j3nv8y/travel_manager.sql.zip?dl=0, unzip it and load it on your DBMS. The download might take several minutes
 
 2. Fork and clone the repository, then import the project on your IDE
 
