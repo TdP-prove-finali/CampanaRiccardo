@@ -9,7 +9,7 @@ import com.zaxxer.hikari.HikariDataSource;
 
 public class DBConnect {
 
-	private static String jdbcURL = "jdbc:mysql://localhost/travel_manager";
+	private static String jdbcURL = "jdbc:mysql://localhost/travel_manager";	//insert your database name 
 	private static HikariDataSource ds;
 
 	public static Connection getConnection() {
